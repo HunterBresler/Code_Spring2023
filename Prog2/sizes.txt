@@ -1,0 +1,8 @@
+Your hat size is 7.46
+
+Your jacket size is 44.25
+
+Your waist size is 33.88
+
+All sizes are in inches and rounded to the nearest hundreth
+

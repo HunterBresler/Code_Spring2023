@@ -14,10 +14,10 @@ using namespace std;
 
 //Function Definitions
 double amortization(double P, double rate, int n);
-void monthlyMath(double& rate, double& balance, double monthlyPay);
-void totalMath(double& totalPaid, double& totalInterest);
-void getInput(double& P, double rate, int n);
-void output();
+void monthlyMath(double *balance , double *monthlyInterest, double *principalPayment, double r , double M);
+void totalMath(double *totalPaid, double *totalInterest, double monthlyInterest, double M);
+void getInput(double *P, double *rate, int *n);
+void outputTable(double *PLoanBalance, double *totalPaid, double *totalInterest, double r, double M, int n);
 
 
 
