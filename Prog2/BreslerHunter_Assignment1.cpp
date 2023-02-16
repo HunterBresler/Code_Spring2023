@@ -1,6 +1,6 @@
 /*
  * Author: Hunter Bresler
- * Date: 1/21/2022
+ * Date: 1/21/2023
  * Assignment1: Coin dispenser/Coin counter
 */
 
