@@ -13,10 +13,10 @@ using namespace std;
 
 //function definitions
 void getInput(double *height, double *weight, int *age);
-void output(double hatSize, double jacketSize, double waistSize);
-double getHatSize(double height, double weight);
-double getJacketSize(double height, double weight, int age);
-double getWaistSize(double height, double weight, int age);
+void output(double hatSize, double jacketSize, double waistSize, double futureHatSize, double futureJacketSize, double futureWaistSize);
+double getHatSize(double height, double weight, double *futureHatSize);
+double getJacketSize(double height, double weight, int age, double *futureJacketSize);
+double getWaistSize(double height, double weight, int age, double *futureWaistSize);
 
 
 
@@ -40,13 +40,16 @@ void getInput(double *height, double *weight, int *age)
 
 
 //*Displays output
-void output(double hatSize, double jacketSize, double waistSize)
+void output(double hatSize, double jacketSize, double waistSize, double futureHatSize, double futureJacketSize, double futureWaistSize)
 {
 
     //output to terminal
     cout << "Your hat size is " << hatSize
-         << "\n\nYour jacket size is " << jacketSize
-         << "\n\nYour waist size is " << waistSize 
+         << "\nYour jacket size is " << jacketSize
+         << "\nYour waist size is " << waistSize 
+         << "\n\nYour hat size in 10 years will be " << futureHatSize
+         << "\nYour jacket in 10 years will be " << futureJacketSize
+         << "\nYour waist size in 10 years will be " << futureWaistSize
          << "\n\nAll sizes are in inches and rounded to the nearest hundreth" << endl << endl;
 
 
@@ -60,8 +63,11 @@ void output(double hatSize, double jacketSize, double waistSize)
     sizeFile << fixed << showpoint << setprecision(2);
 
     sizeFile << "Your hat size is " << hatSize
-             << "\n\nYour jacket size is " << jacketSize
-             << "\n\nYour waist size is " << waistSize 
+             << "\nYour jacket size is " << jacketSize
+             << "\nYour waist size is " << waistSize
+             << "\n\nYour hat size in 10 years will be " << futureHatSize
+             << "\nYour jacket in 10 years will be " << futureJacketSize
+             << "\nYour waist size in 10 years will be " << futureWaistSize 
              << "\n\nAll sizes are in inches and rounded to the nearest hundreth" << endl << endl;
 
 
@@ -74,10 +80,14 @@ void output(double hatSize, double jacketSize, double waistSize)
 
 
 //*Calculates hat size
-double getHatSize(double height, double weight)
+double getHatSize(double height, double weight, double *futureHatSize)
 {
     //Constant for calculations
     const double hatMATH = 2.9;
+
+
+    //Calculate size for 10 years in the future
+    *futureHatSize = (weight/height)*hatMATH;
 
     return (weight/height)*hatMATH;
 }
@@ -85,11 +95,15 @@ double getHatSize(double height, double weight)
 
 
 //*Calculates jacket size (Chest in inches)
-double getJacketSize(double height, double weight, int age)
+double getJacketSize(double height, double weight, int age, double *futureJacketSize)
 {
     //Constants for calculations
-    const double jacketMATH = 288, ageINCREMENT = .125;;
-    const int ageMATH = 10, ageMIN = 3;
+    const double jacketMATH = 288, ageINCREMENT = .125;
+    const int ageMATH = 10, ageMIN = 3, futureMATH = 10;
+
+
+    //Calculate size for 10 years in the future
+    *futureJacketSize = (height*weight)/jacketMATH + ageINCREMENT*((age + futureMATH)/ageMATH - ageMIN);
     
     //Math for increment
     if (age/ageMATH > ageMIN)
@@ -105,11 +119,16 @@ double getJacketSize(double height, double weight, int age)
 
 
 //*Calculattes waist size (in inches)
-double getWaistSize(double height, double weight, int age)
+double getWaistSize(double height, double weight, int age, double *futureWaistSize)
 {
     //Constants for calculations
     const double waistMATH = 5.7, ageINCREMENT = .1;
-    const int ageMATH = 2, ageMIN = 14;
+    const int ageMATH = 2, ageMIN = 14, futureMATH = 10;
+
+
+    //Calculate size for 10 years in the future
+    *futureWaistSize = weight/waistMATH + ageINCREMENT*((age + futureMATH)/ageMATH - ageMIN);
+
 
     //Math for increment
     if (age/ageMATH > ageMIN)
@@ -128,7 +147,7 @@ double getWaistSize(double height, double weight, int age)
 int main(){
 
     //variable declaration
-    double height, weight, hatSize, jacketSize, waistSize;
+    double height, weight, hatSize, jacketSize, waistSize, futureHatSize, futureJacketSize, futureWaistSize;
     int age, quit;
 
     //Format cout
@@ -145,10 +164,10 @@ int main(){
 
         //Call functions
         getInput(&height, &weight, &age);
-        hatSize = getHatSize(height, weight);
-        jacketSize = getJacketSize(height, weight, age);
-        waistSize = getWaistSize(height, weight, age);
-        output(hatSize, jacketSize, waistSize);
+        hatSize = getHatSize(height, weight, &futureHatSize);
+        jacketSize = getJacketSize(height, weight, age, &futureJacketSize);
+        waistSize = getWaistSize(height, weight, age, &futureWaistSize);
+        output(hatSize, jacketSize, waistSize, futureHatSize, futureJacketSize, futureWaistSize);
         
 
 

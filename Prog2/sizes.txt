@@ -1,8 +1,10 @@
 Your hat size is 7.46
-
 Your jacket size is 44.25
-
 Your waist size is 33.88
+
+Your hat size in 10 years will be 7.46
+Your jacket in 10 years will be 44.38
+Your waist size in 10 years will be 34.38
 
 All sizes are in inches and rounded to the nearest hundreth
 
