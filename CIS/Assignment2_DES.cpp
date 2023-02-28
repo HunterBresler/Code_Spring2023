@@ -12,6 +12,8 @@
 using namespace std;
 
 
+
+//*Keeps track of and generates keys associated with a master key
 class KEY 
 {
     private:
@@ -19,9 +21,6 @@ class KEY
         //*Declare member variables
         string master_key;
         string sub_keys[16];
-        int var3;
-        int var4;
-        int var5;
 
         //*Constant member Variables
         //PC1 Table
@@ -56,16 +55,10 @@ class KEY
         //*Getter Functions
         string* get_sub_keys();
         string get_master_key();
-        int get_var3();
-        int get_var4();
-        int get_var5();
 
         //*Setter Functions
         //void set_sub_keys(string new_sub_keys);
         void set_master_key(string master_key);
-        void set_var3(int var3);
-        void set_var4(int var4);
-        void set_var5(int var5);
 
         //*Key generation functions
         void key_generator();
@@ -77,70 +70,34 @@ class KEY
         string pc2_permutation(string generated_key); //Compress generated key into sub key
 };
 
+
+
+//*Implements DES
+//*Accesses and utilizes KEY class
 class DES 
 {
     private:
 
         //*Declare member variables
-        string master_key;
-        string sub_keys[16];
         int var3;
         int var4;
         int var5;
 
-        //*Constant member Variables
-        //PC1 Table
-        const int pc1[56] = 
-            {
-                57,49,41,33,25,17,9, 
-                1,58,50,42,34,26,18, 
-                10,2,59,51,43,35,27, 
-                19,11,3,60,52,44,36,		 
-                63,55,47,39,31,23,15, 
-                7,62,54,46,38,30,22, 
-                14,6,61,53,45,37,29, 
-                21,13,5,28,20,12,4 
-            };
-        //PC2 Table
-        const int pc2[48] = 
-            {
-                14,17,11,24,1,5, 
-                3,28,15,6,21,10, 
-                23,19,12,4,26,8, 
-                16,7,27,20,13,2, 
-                41,52,31,37,47,55, 
-                30,40,51,45,33,48, 
-                44,49,39,56,34,53, 
-                46,42,50,36,29,32 
-            };
-
     public:
         //*Constructor
-        KEY();
+        DES();
 
         //*Getter Functions
-        string* get_sub_keys();
-        string get_master_key();
         int get_var3();
         int get_var4();
         int get_var5();
 
         //*Setter Functions
-        //void set_sub_keys(string new_sub_keys);
-        void set_master_key(string master_key);
         void set_var3(int var3);
         void set_var4(int var4);
         void set_var5(int var5);
-
-        //*Key generation functions
-        void key_generator();
-        //Generates all sub keys and assigns them to sub_keys
-        //Uses the functions below
-
-        string pc1_permutation(); //Compress master key by running it through the pc1 table
-        string left_shift(string input_string); //Shifts key 1 space to the left
-        string pc2_permutation(string generated_key); //Compress generated key into sub key
 };
+
 
 
 //*MAIN
@@ -170,6 +127,7 @@ KEY::KEY()
     cout << endl << "secret key made" << endl << endl;
 }
 
+
 //*Getter Functions
 string* KEY::get_sub_keys() {
     return sub_keys;
@@ -179,17 +137,6 @@ string KEY::get_master_key() {
     return master_key;
 }
 
-int KEY::get_var3() {
-    return var3;
-}
-
-int KEY::get_var4() {
-    return var4;
-}
-
-int KEY::get_var5() {
-    return var5;
-}
 
 //*Setter Functions
 /*
@@ -202,17 +149,6 @@ void KEY::set_master_key(string new_master_key) {
     master_key = new_master_key;
 }
 
-void KEY::set_var3(int new_var3) {
-    var3 = new_var3;
-}
-
-void KEY::set_var4(int new_var4) {
-    var4 = new_var4;
-}
-
-void KEY::set_var5(int new_var5) {
-    var5 = new_var5;
-}
 
 //*Key generation functions
 void KEY::key_generator()
@@ -288,4 +224,50 @@ string KEY::left_shift(string input_string)
     shifted += input_string[0];
 
     return shifted;
+}
+
+
+
+/*
+    !This is the list of functions in the DES Class 
+    !The functions will be folded below
+*/ 
+//*Constructor
+DES::DES()
+{
+
+}
+
+
+//*Getter Functions
+int DES::get_var3()
+{
+
+}
+
+int DES::get_var4()
+{
+
+}
+
+int DES::get_var5()
+{
+
+}
+
+
+//*Setter Functions
+void DES::set_var3(int var3)
+{
+
+}
+
+void DES::set_var4(int var4)
+{
+
+}
+
+void DES::set_var5(int var5)
+{
+
 }
