@@ -6,15 +6,16 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
 
 
 
 using namespace std;
 
 
-
+//TODO input
 //*Keeps track of and generates keys associated with a master key
-class KEY 
+class KEY  
 {
     private:
 
@@ -57,7 +58,7 @@ class KEY
         string get_master_key();
 
         //*Setter Functions
-        void set_master_key(string master_key);
+        void set_master_key(string new_master_key);
 
         //*Key generation functions
         void key_generator(); //*Class driver function
@@ -73,13 +74,13 @@ class KEY
 
 //*Implements DES
 //*Accesses and utilizes KEY class
+//!TODO input
 class DES 
 {
     private:
 
         //*Declare member variables
-        string* sub_keys;
-        string current_key;
+        string sub_keys[16];
         string plain_text;
         string cipher_text;
         KEY master_key;
@@ -197,22 +198,25 @@ class DES
 
         //*DES implementation
         void DES_driver(); //*Driver function
+        void encrypt(); //*Sub-driver function
+        void decrypt(); //*Sub-driver function
         //Runs DES
         //Uses the functions below
 
+        //Lower order functions
         void KEY_call();
         string initial_permutation();
         void expansion();
         string Xor(string a, string b);
-        string sub_box();
+        void sub_box();
         void sub_permutation();
-        void inverse_permutation(string combined);
-        string binary_to_decimal();
-        string decimal_to_binary();
-        void swap_halves();
-        void encrypt();
-        void decrypt();
+        string inverse_permutation(string combined);
 
+        //Lowest order functions
+        int binary_to_decimal(string binary);
+        string decimal_to_binary(int decimal);
+        void swap_halves();
+        void invert_sub_keys();
 };
 
 
@@ -226,7 +230,7 @@ int main(){
     secret_key.set_master_key("1010101010111011000010010001100000100111001101101100110011011101");
     secret_key.key_generator();
     string* subKeys = secret_key.get_sub_keys();
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < 16; i++) //16 is the size of sub_keys
     {
         cout << "Sub Key "<< i+1 << ": " << subKeys[i] << endl;
     }
@@ -279,7 +283,7 @@ void KEY::key_generator()
 
 
     //Generate all 16 sub keys
-    for (int i = 0; i < sizeof(sub_keys)/sizeof(sub_keys[0]); i++)
+    for (int i = 0; i < 16; i++) //16 is the size of sub_keys
     {
         //Shift each half to the the left once for sub keys 1, 2, 9, and 16
         //Shift twice for all other rounds
@@ -308,7 +312,7 @@ void KEY::key_generator()
 string KEY::pc1_permutation()
 {
     string perm_key = "";
-    for (int i = 0; i < sizeof(pc1)/sizeof(pc1[0]); i++)
+    for (int i = 0; i < 56; i++) //56 is the size of pc1
     {
         //Running master key through pc1 table
         perm_key += master_key[pc1[i]-1];
@@ -321,7 +325,7 @@ string KEY::pc2_permutation(string generated_key)
 {
     string sub_key = "";
     //Generates subkey
-    for (int i = 0; i < sizeof(pc2)/sizeof(pc2[0]); i++)
+    for (int i = 0; i < 48; i++) //48 is the size of pc2
     {
         //Running generated key through pc2 table
         sub_key += generated_key[pc2[i]-1];
@@ -353,7 +357,7 @@ string KEY::left_shift(string input_string)
 //*Constructor
 DES::DES()
 {
-    cout << "DES initiated";
+    cout << "DES initiated" << endl << endl;
 }
 
 
@@ -374,9 +378,9 @@ string DES::get_cipher_text()
 }
 
 //*Setter Functions
-void DES::set_plain_text(string plain_text)
+void DES::set_plain_text(string new_plain_text)
 {
-
+    plain_text = new_plain_text;
 }
 
 //*DES implementation
@@ -384,25 +388,82 @@ void DES::set_plain_text(string plain_text)
 void DES::DES_driver()
 {
     KEY_call();
+    set_plain_text("1010101111001101111001101010101111001101000100110010010100110110"); //TODO input
+
+    encrypt();
+    cout << "\n\nCiphertext: " << cipher_text;
+
+    decrypt();
+    cout << "\n\nPlaintext: " << plain_text; 
+}
+
+void DES::encrypt()
+{
+    //Step 1: initial permutation
+    cipher_text = initial_permutation();
+
+    //Step 2: split the result in half
+    left_half = cipher_text.substr(0, 32); 
+	right_half = cipher_text.substr(32, 32);
+
+    //Step 3: run 16 rounds of encryption
+    for (int i = 0; i < 16; i++) //16 is the amount of rounds of encryption to run
+    {
+        //Create modified half to encrypt with
+        modified_half = right_half;
+
+        //Step 3.1: run modified half through expansion table 32->48 bit
+        expansion();
+        //Step 3.2: modified_half = modified half Xor this round's corresponding sub key
+        modified_half = Xor(modified_half, sub_keys[i]);
+        //Step 3.3: run result through sub boxes 48->32 bit
+        sub_box();
+        //Step 3.4: sub box permutation
+        sub_permutation();
+        //Step 3.5: left_half = modified half Xor left half
+        left_half = Xor(modified_half, left_half);
+        //Step 3.6: swap right and left halves
+        swap_halves();
+    }
+
+    //Step 4: inverse permutation of the combined halves
+    //Swap halves once after encryption by combining backwards
+    inverse_permutation(right_half + left_half);
+}
+
+void DES::decrypt()
+{
+    //Invert keys and plaintext for DES to decrypt
+    invert_sub_keys();
+    plain_text = cipher_text;
+
+    //Encrypt() now decrypts, assigning the plaintext to ciphertext, so swap them
+    encrypt();
+    string temp = plain_text;
+    plain_text = cipher_text;
+    cipher_text = plain_text;
 }
 
 void DES::KEY_call() //Gets key from KEY class
 {
-    master_key.set_master_key("1010101010111011000010010001100000100111001101101100110011011101");
+    string key;
+    master_key.set_master_key("1010101010111011000010010001100000100111001101101100110011011101"); //TODO input
     master_key.key_generator();
-    sub_keys = master_key.get_sub_keys();
-    current_key = sub_keys[0];
-    for (int i = 0; i < 16; i++)
+
+    //Add array sub_keys from KEY to DES
+    for (int i = 0; i < 16; i++) //16 is the size of sub_keys
     {
+        string* key = master_key.get_sub_keys();
+        sub_keys[i] = key[i];
         cout << "Sub Key "<< i+1 << ": " << sub_keys[i] << endl;
-    }
+    }  
 }
 
 string DES::initial_permutation()
 {
     //Permutate plaintext with initial permutation table
     string perm = ""; 
-	for(int i = 0; i < sizeof(initial_perm)/sizeof(initial_perm[0]); i++)
+	for(int i = 0; i < 64; i++) //64 is the size of plain text
     { 
 		perm += plain_text[initial_perm[i]-1]; 
 	}
@@ -414,7 +475,7 @@ void DES::expansion()
 {
     //Expand modified half for Xor
     string expanded = "";
-    for(int i = 0; i < sizeof(expansion_table)/sizeof(expansion_table[0]); i++) 
+    for(int i = 0; i < 48; i++) //48 is the size of the expansion table
     { 
       		expanded += modified_half[expansion_table[i]-1]; 
     };
@@ -427,7 +488,8 @@ string DES::Xor(string a, string b)
     //Xor the input strings a and b
     //Assume a and b are equal in size
     string result = ""; 
-	for(int i = 0; i < a.size(); i++){ 
+	for(int i = 0; i < a.size(); i++)
+    { 
 		if(a[i] != b[i])
         { 
 			result += "1"; 
@@ -441,42 +503,85 @@ string DES::Xor(string a, string b)
 	return result; 
 }
 
-string DES::sub_box()
+void DES::sub_box()
 {
+    string result = "";
+    for (int i = 0; i < 8; i++) //8 is how many sub boxes it runs through
+    {
+        //Each sub box takes every 6 bit piece of modified_half
+        //And transforms it into a 4 bit piece, which it appends to result
+        string bit_string = modified_half.substr(i*6, 6);
 
+        //Combine the msb and lsb to get the row# in binary
+        int row = binary_to_decimal("" + bit_string[0] + bit_string[5]);
+
+        //The middle four digits are the column in binary
+        int col = binary_to_decimal(bit_string.substr(1, 4));
+
+        //Append the binary representation of the corresponding sub box int to result
+        result += decimal_to_binary(sub_boxes[i][row][col]);
+    }
+    
+    modified_half = result;
 }
 
 void DES::sub_permutation()
 {
     //Permutate modified half after sub box
     string perm =""; 
-	for(int i = 0; i < sizeof(sub_perm)/sizeof(sub_perm[0]); i++){ 
+	for(int i = 0; i < 32; i++) //32 is the size of sub_perm
+    { 
 		perm += modified_half[sub_perm[i]-1]; 
 	}
 
     modified_half = perm;
 }
 
-void DES::inverse_permutation(string combined)
+string DES::inverse_permutation(string combined)
 {
     //Permutate fully encrypted text into cipher text
     string result = "";
-    for(int i = 0; i < sizeof(inverse_perm)/sizeof(inverse_perm[0]); i++)
+    for(int i = 0; i < 64; i++) //64 is the size of inverse perm
     { 
 		result += combined[inverse_perm[i]-1]; 
 	}
 
-    cipher_text = result;
+    return result;
 }
 
-string DES::binary_to_decimal()
+int DES::binary_to_decimal(string binary)
 {
-
+    //read binary right to left and add 2^i to result if the read digit is '1'
+    int result = 0;
+    for (int i = 0; i < binary.size(); i++)
+    {
+        //Math to read from right to left
+        if (binary[binary.size() - (i+1)] == '1')
+        {
+            result += pow(2, i);
+        }
+    }
+    
+    return result;
 }
 
-string DES::decimal_to_binary()
+string DES::decimal_to_binary(int decimal)
 {
+    //Get the remainder and add it as the right most digit of binary
+    string binary = "";
+    while (decimal != 0)
+    {
+        binary = (decimal % 2 ? "0":"1") + binary; //Sick new operator. Ternary operator epic
+        decimal /= 2;
+    }
 
+    //Make sure binary is 4 bits in length
+    while (binary.size() < 4)
+    {
+        binary = "0" + binary;
+    }
+    
+    return binary;
 }
 
 void DES::swap_halves()
@@ -487,12 +592,13 @@ void DES::swap_halves()
 	left_half = temp;
 }
 
-void DES::encrypt()
+void DES::invert_sub_keys()
 {
-
-}
-
-void decrypt()
-{
-
+    string temp;
+    for (int i = 0; i < 8; i++) //8 is how many pairs of sub keys we have to swap
+    {
+        temp = sub_keys[i];
+        sub_keys[i] = sub_keys[15-i]; //15 is the last index of sub keys
+        sub_keys[15-i] = temp;
+    }
 }
