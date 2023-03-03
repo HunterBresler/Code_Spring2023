@@ -5,6 +5,7 @@
 */
 
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -29,12 +30,10 @@ class COP3014
         string firstName;
         string lastName;
         int zNumber;
+        bool missed_exam;
         double totalGrade;
         char finalGrade;
         allGrades_COP3014 allGrades; 
-
-        //*Check Functions
-        // TODO: ASK ABOUT CHECK FUNCTIONS
 
     public:
         //*Constructor
@@ -45,6 +44,7 @@ class COP3014
         string get_firstName();
         string get_lastName();
         int get_zNumber();
+        bool get_missed_exam();
         double get_totalGrade();
         char get_finalGrade();
         allGrades_COP3014 get_allGrades();
@@ -54,6 +54,7 @@ class COP3014
         void set_firstName(string new_firstName);
         void set_lastName(string new_lastName);
         void set_zNumber(int new_zNumber);
+        void set_missed_exam(bool new_missed_exam);
         void set_totalGrade(double new_totalGrade);
         void set_finalGrade(char new_finalGrade);
         void set_allGrades(allGrades_COP3014& new_allGrades);
@@ -65,6 +66,9 @@ class COP3014
         //*IO Functions
         void input();
         void output();
+
+        //*Check Functions
+        void check_inputs();
  
 };
 
@@ -96,10 +100,6 @@ int main(){
     //Test setter functions
     input_student.input();
     input_student.output();
-    //Test calc functions
-    input_student.calc_totalGrade();
-    input_student.calc_finalGrade();
-    input_student.output();
 
 
     return 0;
@@ -115,6 +115,7 @@ int main(){
 COP3014::COP3014()
 {
     allGrades = {100,100,100,100,100};
+    missed_exam = 0;
 }
 
 
@@ -132,6 +133,11 @@ string COP3014::get_lastName()
 int COP3014::get_zNumber()
 {
     return zNumber;
+}
+
+bool COP3014::get_missed_exam()
+{
+    return missed_exam;
 }
 
 double COP3014::get_totalGrade()
@@ -166,15 +172,19 @@ void COP3014::set_zNumber(int new_zNumber)
     zNumber = new_zNumber;
 }
 
-//! ASK WHY THESE ARE HERE
+void COP3014::set_missed_exam(bool new_missed_exam)
+{
+    missed_exam = new_missed_exam;
+}
+
 void COP3014::set_totalGrade(double new_totalGrade)
 {
-    calc_totalGrade();
+    calc_totalGrade(); //The illusion of choice
 }
 
 void COP3014::set_finalGrade(char new_finalGrade)
 {
-    calc_finalGrade();
+    finalGrade = new_finalGrade;
 }
 
 void COP3014::set_allGrades(allGrades_COP3014& new_allGrades)
@@ -194,7 +204,11 @@ void COP3014::calc_totalGrade()
 
 void COP3014::calc_finalGrade()
 {
-    if (totalGrade>=90)
+    if (missed_exam)
+    {
+        finalGrade = 'F';
+    }
+    else if (totalGrade>=90)
     {
         finalGrade = 'A';
     }
@@ -240,8 +254,11 @@ void COP3014::input()
 
     cout << endl;
 
+    //Check for valid input
+    check_inputs();
+
     //Automatically calculates totalGrade and finalGrade
-    get_totalGrade();
+    calc_totalGrade();
     calc_finalGrade();
 }
 
@@ -256,4 +273,40 @@ void COP3014::output()
          << "\tTotal Grade: " << totalGrade << endl 
          << "\tFinal Grade: " << finalGrade << endl
          << endl;
+}
+
+//*Check Functions
+void COP3014::check_inputs()
+{
+    //Checks for INVALID Z-number
+    while (to_string(zNumber).size() != 8) //8 is the size of all Z-numbers
+    {
+        cout << "INVALID Z-number: must be 8 digits\nEnter a correct Z-number here: ";
+        cin >> zNumber;
+        cout << endl;
+    }
+
+    //Checks for INVALID grades
+    while (allGrades.quiz1 < 0 || allGrades.quiz1 > 120 || //120 is the maximum grade I decided to allow
+           allGrades.quiz2 < 0 || allGrades.quiz2 > 120 ||
+           allGrades.quiz3 < 0 || allGrades.quiz3 > 120 ||
+           allGrades.midterm < 0 || allGrades.midterm > 120 ||
+           allGrades.final < 0 || allGrades.final > 120)
+    {
+        cout << "INVALID grade: grades must be positive and <= 120%\nPlease re-enter the grades.\n\n";
+
+        cout << "Enter the student's 3 quiz grades: ";
+        cin >> allGrades.quiz1 >> allGrades.quiz2 >> allGrades.quiz3;
+
+        cout << "Enter the student's midterm and final grades: ";
+        cin >> allGrades.midterm >> allGrades.final;
+        cout << endl;
+    }
+
+    if (allGrades.midterm == 0 || allGrades.final == 0)
+    {
+        cout << "Was " << firstName << " " << lastName << " absent for the final or midterm?\nEnter 1 for yes, 0 for no: ";
+        cin >> missed_exam;
+        cout << endl;
+    }
 }
