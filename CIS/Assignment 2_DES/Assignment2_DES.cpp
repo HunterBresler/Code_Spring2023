@@ -7,13 +7,13 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <stdlib.h>
 
 
 
 using namespace std;
 
 
-//TODO input
 //*Keeps track of and generates keys associated with a master key
 class KEY  
 {
@@ -68,13 +68,19 @@ class KEY
         string pc1_permutation(); //Compress master key by running it through the pc1 table
         string left_shift(string input_string); //Shifts key 1 space to the left
         string pc2_permutation(string generated_key); //Compress generated key into sub key
+
+        //*IO Functions
+        void input_master_key();
+        void output();
+
+        //*Check functions
+        void check_key();
 };
 
 
 
 //*Implements DES
 //*Accesses and utilizes KEY class
-//!TODO input
 class DES 
 {
     private:
@@ -197,7 +203,7 @@ class DES
         void set_plain_text(string plain_text);
 
         //*DES implementation
-        void DES_driver(); //*Driver function
+        void DES_driver_input(); //*Driver function
         void encrypt(); //*Sub-driver function
         void decrypt(); //*Sub-driver function
         //Runs DES
@@ -217,6 +223,13 @@ class DES
         string decimal_to_binary(int decimal);
         void swap_halves();
         void invert_sub_keys();
+
+        //*IO Functions
+        void input_plain_text();
+        void output();
+
+        //*Check functions
+        void check_plain_text();
 };
 
 
@@ -224,20 +237,9 @@ class DES
 //*MAIN
 int main(){
 
-    //Test key generation
-    /*
-    KEY secret_key;
-    secret_key.set_master_key("1010101010111011000010010001100000100111001101101100110011011101");
-    secret_key.key_generator();
-    string* subKeys = secret_key.get_sub_keys();
-    for (int i = 0; i < 16; i++) //16 is the size of sub_keys
-    {
-        cout << "Sub Key "<< i+1 << ": " << subKeys[i] << endl;
-    }
-    */
-
     DES run_DES;
-    run_DES.DES_driver();
+    run_DES.DES_driver_input();
+
     return 0;
 }
 
@@ -249,7 +251,7 @@ int main(){
 //*Constructor
 KEY::KEY()
 {
-    cout << endl << "secret key made" << endl << endl;
+    cout << endl << "Secret key made." << endl << endl;
 }
 
 
@@ -275,6 +277,9 @@ void KEY::set_master_key(string new_master_key)
 //*Key generation functions
 void KEY::key_generator()
 {
+    //Make sure input is valid
+    check_key();
+
     //Permutate the master key using pc1
     //Then split it in half
     string perm_key = pc1_permutation();
@@ -349,6 +354,42 @@ string KEY::left_shift(string input_string)
 }
 
 
+//*IO Functions
+void KEY::input_master_key()
+{
+    cout << "Enter your 64 bit master key here: ";
+    cin >> master_key;
+    cout << endl;
+}
+
+void KEY::output()
+{
+    cout << "Master key: " << master_key << endl << endl;
+    for (int i = 0; i < 16; i++) //16 is the size of sub_keys
+    {
+        cout << "Sub Key "<< i+1 << ": " << sub_keys[i] << endl;
+    }
+}
+
+
+//*Check functions
+void KEY::check_key()
+{
+    if (master_key.size() != 64)
+    {
+        cout << "Invalid input size: Program end";
+        exit(0);
+    }
+
+    for (int i = 0; i < 64; i++) //64 is the master key size
+    {
+        if (master_key[i] != '0' && master_key[i] != '1')
+        {
+            cout << "Invalid input (not binary): Program end";
+            exit(0);
+        }
+    }
+}
 
 /*
     !This is the list of functions in the DES Class 
@@ -385,20 +426,27 @@ void DES::set_plain_text(string new_plain_text)
 
 //*DES implementation
 //*Driver function
-void DES::DES_driver()
+void DES::DES_driver_input()
 {
+    //Get user input
+    master_key.input_master_key();
     KEY_call();
-    set_plain_text("1010101111001101111001101010101111001101000100110010010100110110"); //TODO input
+    master_key.output();
+    input_plain_text();
 
+    //encypt and decrypt
     encrypt();
-    cout << "\n\nCiphertext: " << cipher_text;
-
     decrypt();
-    cout << "\n\nPlaintext: " << plain_text; 
+
+    //output
+    output();
 }
 
 void DES::encrypt()
 {
+    //Make sure input is valid
+    check_plain_text();
+
     //Step 1: initial permutation
     cipher_text = initial_permutation();
 
@@ -428,26 +476,27 @@ void DES::encrypt()
 
     //Step 4: inverse permutation of the combined halves
     //Swap halves once after encryption by combining backwards
-    inverse_permutation(right_half + left_half);
+    cipher_text = inverse_permutation(right_half + left_half);
 }
 
 void DES::decrypt()
 {
     //Invert keys and plaintext for DES to decrypt
     invert_sub_keys();
+    string temp = cipher_text;
     plain_text = cipher_text;
 
     //Encrypt() now decrypts, assigning the plaintext to ciphertext, so swap them
+    //temp keeps the value of the original ciphertext from encryption
     encrypt();
-    string temp = plain_text;
     plain_text = cipher_text;
-    cipher_text = plain_text;
+    cipher_text = temp;
 }
 
+//*Lower order functions
 void DES::KEY_call() //Gets key from KEY class
 {
     string key;
-    master_key.set_master_key("1010101010111011000010010001100000100111001101101100110011011101"); //TODO input
     master_key.key_generator();
 
     //Add array sub_keys from KEY to DES
@@ -455,7 +504,6 @@ void DES::KEY_call() //Gets key from KEY class
     {
         string* key = master_key.get_sub_keys();
         sub_keys[i] = key[i];
-        cout << "Sub Key "<< i+1 << ": " << sub_keys[i] << endl;
     }  
 }
 
@@ -477,7 +525,7 @@ void DES::expansion()
     string expanded = "";
     for(int i = 0; i < 48; i++) //48 is the size of the expansion table
     { 
-      		expanded += modified_half[expansion_table[i]-1]; 
+      	expanded += modified_half[expansion_table[i]-1]; 
     };
 
     modified_half = expanded;
@@ -513,7 +561,7 @@ void DES::sub_box()
         string bit_string = modified_half.substr(i*6, 6);
 
         //Combine the msb and lsb to get the row# in binary
-        int row = binary_to_decimal("" + bit_string[0] + bit_string[5]);
+        int row = binary_to_decimal(bit_string.substr(0, 1) + bit_string.substr(5, 1));
 
         //The middle four digits are the column in binary
         int col = binary_to_decimal(bit_string.substr(1, 4));
@@ -549,6 +597,7 @@ string DES::inverse_permutation(string combined)
     return result;
 }
 
+//*Lowest order functions
 int DES::binary_to_decimal(string binary)
 {
     //read binary right to left and add 2^i to result if the read digit is '1'
@@ -571,7 +620,7 @@ string DES::decimal_to_binary(int decimal)
     string binary = "";
     while (decimal != 0)
     {
-        binary = (decimal % 2 ? "0":"1") + binary; //Sick new operator. Ternary operator epic
+        binary = (decimal % 2 == 0 ? "0":"1") + binary; //Sick new operator. Ternary operator epic
         decimal /= 2;
     }
 
@@ -602,3 +651,48 @@ void DES::invert_sub_keys()
         sub_keys[15-i] = temp;
     }
 }
+
+//*IO Functions
+void DES::input_plain_text()
+{
+    cout << endl << "Enter your plain text in binary here: ";
+    cin >> plain_text;
+    cout << endl;
+}
+
+void DES::output()
+{
+    cout << string(100, '-')
+         << "\n\nPlaintext: " << plain_text 
+         << "\n\nCiphertext: " << cipher_text 
+         << "\n\nDecrypted text: " << plain_text;
+}
+
+//*Check functions
+void DES::check_plain_text()
+{
+    //plain_text must be able to be split into 64 bit pieces
+    while (plain_text.size()%64 != 0) 
+    {
+        plain_text = "0" + plain_text;
+    }
+
+    //!Program cannot currently handle inputs larger than 64 bits
+    if (plain_text.size() != 64)
+    {
+        cout << "Invalid input size (must be <= 64 bits): Program end";
+        exit(0);
+    }
+
+
+    //Makes sure input is binary
+    for (int i = 0; i < plain_text.size(); i++) //64 is the master key size
+    {
+        if (plain_text[i] != '0' && plain_text[i] != '1')
+        {
+            cout << "Invalid input (not binary): Program end";
+            exit(0);
+        }
+    }
+}
+
