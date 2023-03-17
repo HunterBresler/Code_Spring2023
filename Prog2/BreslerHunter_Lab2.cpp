@@ -52,6 +52,7 @@ int main() {
     neg.output();
     neg2.output();
 
+
     //*Test Money Class functions
     cout << "\nTesting Money class functions (excluding IO stream)\n";
     Money expenses(100.00), revenue(150, 23), profit, result;
@@ -82,18 +83,16 @@ int main() {
     int cents = result.getMoney();
     cout << "\nCents should be 100. Cents: " << cents;
     
+
     //*Test IO streams
     //Test output stream
     cout << "\n\nOutput result to screen:";
     profit.output(cout);
 
-    //Test input
+    //Test input stream
     cout << "\n\nInput cash amount in $00.00/-$00.00 form: ";
     result.input(cin);
     result.output();
-    
-
-
 
     return 0;
 
@@ -150,36 +149,36 @@ void Money::setMoney(int new_money)
 
 
 //*Calculations
-Money Money::add(Money add)
+Money Money::add(Money add) //Add 2 Money objects: return Money object
 {
     add.money += money;
     return add;
 }
 
-Money Money::subtract(Money sub)
+Money Money::subtract(Money sub) //Subtract 2 Money objects: return Money object
 {
     sub.money = money - sub.money;
     return sub;
 }
 
-bool Money::equal(Money compare)
+bool Money::equal(Money compare) //Compare 2 Money objects: return bool
 {
     return money == compare.money;
 }
 
 
 //*IO Functions
-void Money::output()
+void Money::output() //cout
 {
     cout << "\nThe Money object has a value of " << money << " cents.\n";
 }
 
-void Money::output(ostream& out)
+void Money::output(ostream& out) //parameter ostream
 {
     out << "\nThe Money object has a value of " << money << " cents.\n";
 }
 
-void Money::input(istream& ins)
+void Money::input(istream& ins) //parameter istream
 {
     string input;
     ins >> input;
