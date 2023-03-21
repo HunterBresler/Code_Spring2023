@@ -1,41 +1,48 @@
 //*ELGAMAL Implementation
 #include <iostream>
 #include <vector>
+#include <fstream>
 #include "elGamal.h"
 
 using namespace std;
 
-//*Getter/Setter Functions
+//*Constructors
+ELGAMAL::ELGAMAL()
+{
+
+}
+
+
+//* Getter/Setter Functions
+void ELGAMAL::getPublicKey_fromFileStream()
+{
+
+}
+
+void ELGAMAL::setPrime()
+{
+
+}
+
+void ELGAMAL::setGenerator()
+{
+
+}
+
+void ELGAMAL::setGen_PowA()
+{
+
+}
 
 
 //*Calc Functions
 //Modular Exponentiation
-int ELGAMAL::ModExpo(int base, int modulo, int expo)
+//
+vector<char> ELGAMAL::ModExpo(vector<char> base, vector<char> modulo, vector<char> exponent)
 {
-    
-    //Convert expo to binary
-    //Declare variable
-    int i = 0;
-    vector<int> exponent = {};
 
-    //Loop to convert the exponent to binary
-    while (expo > 0)
-    {
-        exponent.push_back(expo%2);
-        expo = (expo - exponent[i])/2;
-        i++;
-    }
-
-
-    //modular expo
-    //Any number mod 1 is 0
-    if (modulo == 1)
-    {
-        return 0;
-    }
-    
     //Declare variable for return  value
-    int result = 1;
+    vector<char> result = 1;
 
     
     //Short circuit to prevent error with the next if statement
@@ -66,3 +73,15 @@ int ELGAMAL::ModExpo(int base, int modulo, int expo)
 
     return result;
 }
+
+
+vector<char> ELGAMAL::BinaryAdd(vector<char> add1, vector<char> add2)
+{
+
+}
+
+vector<char> ELGAMAL::BinaryMultiply(vector<char> multi1, vector<char> multi2)
+{
+
+}
+
