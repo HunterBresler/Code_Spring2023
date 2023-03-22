@@ -83,9 +83,9 @@ string ELGAMAL::MakeShiftedString(string shiftStr, int shiftCount)
 //
 string ELGAMAL::ModExpo(string base, string modulo, string exponent)
 {
-    /*
+    
     //Declare variable for return  value
-    string result = 1;
+    string result = "1";
 
     
     //Short circuit to prevent error with the next if statement
@@ -105,18 +105,17 @@ string ELGAMAL::ModExpo(string base, string modulo, string exponent)
     for (int i = 1; i < exponent.size(); i++)
     {
 
-        base = (base*base) % modulo;
+        base = Multiply(base, base) % modulo;
 
         if (exponent[i] == 1)
         {
-            result = (base*result) % modulo;
+            result = Multiply(base, result) % modulo;
         }
 
     }
 
     return result;
-    */
-   return base;
+    
 }
 
 
@@ -144,6 +143,32 @@ string ELGAMAL::Add(string add1, string add2)
 
     return sum;
 }
+
+//!Change to subtraction
+string Sub(string sub1, string sub2)
+{
+    int i = sub1.size() - 1;
+    int j = sub2.size() - 1;
+    string sum = "";
+    int carry = 0; //Carry for bit subtraction
+
+    while (i >= 0 || j >= 0 || carry == 1)
+    {
+        carry += ((i >= 0) ? sub1[i] - '0': 0);
+        carry += ((j >= 0) ? sub2[j] - '0': 0);
+        
+        sum = char(carry%2 + '0') + sum;
+
+        carry /= 2;
+
+        //Decrement i and j
+        i--;
+        j--;
+    }
+
+    return sum;
+}
+
 
 string ELGAMAL::Multiply(string X, string Y)
 {

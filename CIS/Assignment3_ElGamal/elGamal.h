@@ -34,6 +34,7 @@ class ELGAMAL
         string MakeShiftedString(string shiftStr, int shiftCount);
         string ModExpo(string base, string modulo, string exponent);
         string Add(string add1, string add2);
+        string Sub(string sub1, string sub2);
         string Multiply(string X, string Y);
 
 };
