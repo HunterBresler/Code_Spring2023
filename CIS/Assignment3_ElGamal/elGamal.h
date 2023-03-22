@@ -6,15 +6,15 @@ using namespace std;
 
 //Contains all functions and variables to encrypt AND decrypt elgamal
 //IO from file
-//uses vector<char> for binary representation
+//uses string for binary representation
 class ELGAMAL
 {
 
     private:
-        //vector<char> prime;
-        //vector<char> generator;
-        //vector<char> generator_pow_private_key;
-        //vector<char> private_key;
+        //string prime;
+        //string generator;
+        //string generator_pow_private_key;
+        //string private_key;
         //ostream& send;
         //istream& receive;
 
@@ -29,11 +29,12 @@ class ELGAMAL
         void setGenerator();
         void setGen_PowA();
 
-        //*Calc Functions
-        void MakeEqualSize(vector<char> &first, vector<char> &second);
-        vector<char> ModExpo(vector<char> base, vector<char> modulo, vector<char> exponent);
-        vector<char> BinaryAdd(vector<char> add1, vector<char> add2);
-        vector<char> BinaryMultiply(vector<char> multi1, vector<char> multi2);
+        //*Binary Calc Functions
+        void MakeEqualSize(string &first, string &second);
+        string MakeShiftedString(string shiftStr, int shiftCount);
+        string ModExpo(string base, string modulo, string exponent);
+        string Add(string add1, string add2);
+        string Multiply(string X, string Y);
 
 };
 

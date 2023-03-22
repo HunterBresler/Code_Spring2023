@@ -1,6 +1,6 @@
 //*ELGAMAL Implementation
 #include <iostream>
-#include <vector>
+#include <string>
 #include <fstream>
 #include "elGamal.h"
 
@@ -34,62 +34,58 @@ void ELGAMAL::setGen_PowA()
 }
 
 
-//*Calc Functions
-void ELGAMAL::MakeEqualSize(vector<char> &first, vector<char> &second)
+//*Binary Calc Functions
+void ELGAMAL::MakeEqualSize(string &first, string &second)
 {
     int lenFirst = first.size();
     int lenSecond = second.size();
-    vector<char> replaceSmaller; //Avoid insertion at front
-
+    string addToFront = "";
 
     if (lenFirst > lenSecond) //When first is longer
     {
-        replaceSmaller.reserve(lenFirst);
 
         //Add extra 0s
         for (int i = 0; i < lenFirst-lenSecond; i++)
         {
-            replaceSmaller[i] = '0';
+            addToFront += '0';
         }
-
         //Add original value
-        for (int i = lenFirst-lenSecond; i < lenFirst; i++)
-        {
-            replaceSmaller[i] = second[i];
-        }
-
-        copy(replaceSmaller.begin(), replaceSmaller.end(), second.begin());
+        second = addToFront + second;
     
     }
     else if (lenSecond > lenFirst) //When second is longer
     {
 
-        replaceSmaller.reserve(lenSecond);
-
         //Add extra 0s
-        for (int i = 0; i < lenSecond-lenFirst; i++)
+        for (int i = 0; i < lenFirst-lenSecond; i++)
         {
-            replaceSmaller[i] = '0';
+            addToFront += '0';
         }
-
         //Add original value
-        for (int i = lenSecond-lenFirst; i < lenSecond; i++)
-        {
-            replaceSmaller[i] = first[i];
-        }
-
-        copy(replaceSmaller.begin(), replaceSmaller.end(), first.begin());
+        first = addToFront + first;
     
     }
 }
 
+
+//Shift string by certain amonut for binary multiplication
+string ELGAMAL::MakeShiftedString(string shiftStr, int shiftCount)
+{
+    for (int i = 0; i < shiftCount; i++)
+    {
+        shiftStr += "0";
+    }
+    return shiftStr;
+}
+
+
 //Modular Exponentiation
 //
-vector<char> ELGAMAL::ModExpo(vector<char> base, vector<char> modulo, vector<char> exponent)
+string ELGAMAL::ModExpo(string base, string modulo, string exponent)
 {
     /*
     //Declare variable for return  value
-    vector<char> result = 1;
+    string result = 1;
 
     
     //Short circuit to prevent error with the next if statement
@@ -124,57 +120,54 @@ vector<char> ELGAMAL::ModExpo(vector<char> base, vector<char> modulo, vector<cha
 }
 
 
-vector<char> ELGAMAL::BinaryAdd(vector<char> add1, vector<char> add2)
+string ELGAMAL::Add(string add1, string add2)
 {
-    //Makes both parameters equal in size
-    MakeEqualSize(add1, add2);
 
-    vector<char> sum(add1.size());
-    char carry = '0'; //Carry for bit addition
+    int i = add1.size() - 1;
+    int j = add2.size() - 1;
+    string sum = "";
+    int carry = 0; //Carry for bit addition
 
-    for (int i = add1.size()-1; i >= 0; i--)
+    while (i >= 0 || j >= 0 || carry == 1)
     {
+        carry += ((i >= 0) ? add1[i] - '0': 0);
+        carry += ((j >= 0) ? add2[j] - '0': 0);
         
-        if (add1[i] == '1' && add2[i] == '1')
-        {
-            sum[i] = carry;
-            carry = '1';
+        sum = char(carry%2 + '0') + sum;
 
-            //If the last digits and carry add to 1 or 2, add a 1 in front of sum
-            if (i == 0)
-            {
-                sum.insert(sum.begin(), '1');
-            }
-        }
-        else if (add1[i] == '0' && add2[i] == '0')
-        {
-            sum[i] = carry;
-            carry = '0';
-        }
-        else if (carry == '1')
-        {
-            sum[i] = '0';
-            carry = '1';
+        carry /= 2;
 
-            //If the last digits and carry add to 1 or 2, add a 1 in front of sum
-            if (i == 0)
-            {
-                sum.insert(sum.begin(), '1');
-            }
-        }
-        else if (carry == '0')
-        {
-            sum[i] = '1';
-        }
+        //Decrement i and j
+        i--;
+        j--;
     }
 
     return sum;
 }
 
-vector<char> ELGAMAL::BinaryMultiply(vector<char> multi1, vector<char> multi2)
+string ELGAMAL::Multiply(string X, string Y)
 {
-    MakeEqualSize(multi1, multi2);
 
-    return multi1;
+    string result = "0";
+    string shifted;
+    int len = Y.size();
+
+    //Add 
+    for (int i = len-1; i >= 0; i--)
+    {
+        if (Y[i] == '1')
+        {
+            shifted = MakeShiftedString(X, len - (i+1));
+            cout << "\nshifted:" << shifted << endl;
+            result = Add(shifted, "0");
+            cout << "\nresult:" << result << endl;
+        }
+        else
+        {
+            continue;
+        }
+    }
+
+    return result;
 }
 

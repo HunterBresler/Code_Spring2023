@@ -1,6 +1,6 @@
 //*MAIN
 #include <iostream>
-#include <vector>
+#include <string>
 #include <fstream>
 #include "elGamal.h"
 #include "elgamal.cpp"
@@ -13,9 +13,9 @@ int main(){
     ELGAMAL hasKey, sendsKey;
 
 
-    vector<char> add1 = {'0', '1', '1'};
-    vector<char> add2 = {'0', '1', '0'};
-    vector<char> sum = hasKey.BinaryAdd(add1, add2);
+    string add1 = "101";
+    string add2 = "100";
+    string sum = hasKey.Multiply(add1, add2);
 
     cout << "\nBinary print: ";
     for (int i = 0; i < sum.size(); i++)
