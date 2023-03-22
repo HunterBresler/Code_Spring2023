@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include "elGamal.h"
+#include "elgamal.cpp"
 
 using namespace std;
 
