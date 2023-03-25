@@ -79,8 +79,7 @@ string ELGAMAL::MakeShiftedString(string shiftStr, int shiftCount)
 }
 
 
-//Modular Exponentiation
-//
+//Binary Modular Exponentiation
 string ELGAMAL::ModExpo(string base, string modulo, string exponent)
 {
     
@@ -105,11 +104,11 @@ string ELGAMAL::ModExpo(string base, string modulo, string exponent)
     for (int i = 1; i < exponent.size(); i++)
     {
 
-        base = Multiply(base, base) % modulo;
+        base = Multiply(base, base);// % modulo;
 
         if (exponent[i] == 1)
         {
-            result = Multiply(base, result) % modulo;
+            result = Multiply(base, result);// % modulo;
         }
 
     }
@@ -119,6 +118,7 @@ string ELGAMAL::ModExpo(string base, string modulo, string exponent)
 }
 
 
+//Binary Addition
 string ELGAMAL::Add(string add1, string add2)
 {
 
@@ -144,32 +144,67 @@ string ELGAMAL::Add(string add1, string add2)
     return sum;
 }
 
-//!Change to subtraction
-string Sub(string sub1, string sub2)
+
+//Binary subtraction
+//WILL NOT COMPUTE NEGATIVES
+string ELGAMAL::Sub(string minuend, string subtrahend)
 {
-    int i = sub1.size() - 1;
-    int j = sub2.size() - 1;
     string sum = "";
-    int carry = 0; //Carry for bit subtraction
 
-    while (i >= 0 || j >= 0 || carry == 1)
+    //Make sure they are equal in size
+    MakeEqualSize(minuend, subtrahend);
+
+    //check for negatives (kinda)
+    if (minuend.size() < subtrahend.size() || minuend == subtrahend)
     {
-        carry += ((i >= 0) ? sub1[i] - '0': 0);
-        carry += ((j >= 0) ? sub2[j] - '0': 0);
-        
-        sum = char(carry%2 + '0') + sum;
+        cout << "Error: ELGAMAL::Sub cannot compute ";
+        return "0";
+    }
 
-        carry /= 2;
 
-        //Decrement i and j
-        i--;
-        j--;
+    //Replace subtrahend with it's 1s complement
+    for (int i = 0; i < subtrahend.size(); i++)
+    {
+        subtrahend[i] = ((subtrahend[i] == '1') ? '0': '1');
+    }
+
+
+    //Add minuend and the 1s complement for subtraction
+    sum = Add(minuend, subtrahend);
+
+    //Check for carry and add it back into sum
+    if (sum.size() > minuend.size())
+    {
+        sum.erase(sum.begin());
+        sum = Add(sum, "1");
     }
 
     return sum;
 }
 
 
+string ELGAMAL::Xor(string a, string b)
+{
+    //Xor the input strings a and b
+    //Assume a and b are equal in size
+    string result = ""; 
+	for(int i = 0; i < a.size(); i++)
+    { 
+		if(a[i] != b[i])
+        { 
+			result += "1"; 
+		}
+		else
+        { 
+			result += "0"; 
+		} 
+	} 
+
+	return result; 
+}
+
+
+//Binary Multiplication
 string ELGAMAL::Multiply(string X, string Y)
 {
 
@@ -182,10 +217,9 @@ string ELGAMAL::Multiply(string X, string Y)
     {
         if (Y[i] == '1')
         {
+            //Uses repeated addition to multiply
             shifted = MakeShiftedString(X, len - (i+1));
-            cout << "\nshifted:" << shifted << endl;
-            result = Add(shifted, "0");
-            cout << "\nresult:" << result << endl;
+            result = Add(shifted, result);
         }
         else
         {
@@ -196,3 +230,27 @@ string ELGAMAL::Multiply(string X, string Y)
     return result;
 }
 
+string ELGAMAL::Modulus(string divadend, string divisor)
+{
+
+    string result = divadend;
+    string shifted;
+    int len = divadend.size();
+
+    //Sub
+    while (divisor.size() <= result.size())
+    {
+        if (result[0] == '1')
+        {
+            //Uses Xor to divide
+            shifted = MakeShiftedString(divisor, result.size()-divisor.size());
+            result = Xor(shifted, result);
+        }
+        else
+        {
+            result.erase(result.begin());
+        }
+    }
+
+    return result;
+}

@@ -11,13 +11,10 @@ class ELGAMAL
 {
 
     private:
-        //string prime;
-        //string generator;
-        //string generator_pow_private_key;
-        //string private_key;
-        //ostream& send;
-        //istream& receive;
-
+        string prime;
+        string generator;
+        string generator_pow_private_key;
+        string private_key;
 
     public:
         //*Constructors
@@ -35,7 +32,9 @@ class ELGAMAL
         string ModExpo(string base, string modulo, string exponent);
         string Add(string add1, string add2);
         string Sub(string sub1, string sub2);
+        string Xor(string a, string b);
         string Multiply(string X, string Y);
+        string Modulus(string divadend, string divisor);
 
 };
 
