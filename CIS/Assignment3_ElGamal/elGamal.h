@@ -39,9 +39,13 @@ class ELGAMAL
         string Xor(string a, string b);
         string Multiply(string X, string Y);
         string Modulus(string divadend, string divisor);
+        string Div(string divadend, string divisor);
+        string getRandom(string min, string max);
 
         //*ELGAMAL Functions
         void generatePrivateKey();
+        bool isPrime(string num, int k);
+        bool millerTest(string num, string d);
 
 };
 

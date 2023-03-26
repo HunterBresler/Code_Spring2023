@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <cstdlib>
 #include "elGamal.h"
 
 
@@ -357,17 +358,202 @@ string ELGAMAL::Modulus(string divadend, string divisor)
                 break;
             }
         }
-        else
+        else //!Might never run
         {
             result.erase(result.begin());
         }
     }
 
-    //Check for no remainder
-    //if (result.size() == 0)
-    //{
-    //    return "0";
-    //}
+    return result;
+}
+
+
+string ELGAMAL::Div(string divadend, string divisor)
+{
+    string result = "";
+    string shifted;
+    int zeros;
+
+    //Check for error cases
+    if (divadend == divisor)
+    {
+        return "1";
+    }
+    else if (!IsGreaterThan(divadend, divisor))
+    {
+        cout << "\nError:divadend must be >= divisor";
+        return "0";
+    }
+
+    //Sub
+    while (divisor.size() <= divadend.size())
+    {
+        zeros = divadend.size(); //Keeps track of how many "0"s to add in between subtractions
+
+        if (divadend[0] == '1')
+        {
+            //Uses Sub to divide
+            shifted = MakeShiftedString(divisor, divadend.size()-divisor.size());
+
+            //Make sure shifted is greater than or equal to divadend before sub
+            if (IsGreaterThan(divadend, shifted) || divadend == shifted)
+            {
+                result += "1";
+                divadend = Sub(divadend, shifted);
+            }
+            else if (divadend.size() > divisor.size()) //In case the shift makes divadend larger than divisor
+            {
+                result += "01";
+                shifted.pop_back();
+                divadend = Sub(divadend, shifted);
+            }
+            else
+            {
+                break;
+            }
+
+            zeros -= divadend.size();
+
+            //Adds in "0"s 
+            for (int i = 0; i < zeros-1; i++)
+            {
+                result += "0";
+            }
+        }
+        else //!Might never run
+        {
+            result += "0";
+            divadend.erase(divadend.begin());
+        }
+    }
 
     return result;
+    
+}
+
+
+
+string ELGAMAL::getRandom(string min, string max)
+{
+    
+    int randSize = rand() % (max.size()+1);
+    string randomNum = "";
+
+
+    //Recurs until randSize is larger than minSize
+    if (randSize <= min.size())
+    {
+        return getRandom(min, max);
+    }
+
+
+    //Fill in random sized string with random binary values
+    for (int i = 0; i < randSize; i++)
+    {
+        randomNum += ((rand() % 2 == 1) ? '1': '0');
+    }
+
+
+    //Remove excess 0s
+    while (randomNum[0] == '0')
+    {
+        randomNum.erase(randomNum.begin());
+    }
+
+
+    //Recurs until random num is < max and random num > min
+    if (IsGreaterThan(randomNum, max) || randomNum == max || !IsGreaterThan(randomNum, min))
+    {
+        return getRandom(min, max);
+    }
+
+    return randomNum;
+}
+
+
+
+//*ELGAMAL Functions
+void ELGAMAL::generatePrivateKey()
+{
+
+}
+
+
+bool ELGAMAL::isPrime(string num, int k)
+{
+
+    //Base cases
+    if (num == "1")
+    {
+        return false;
+    }
+    else if (num == "10" || num == "11")
+    {
+        return true;
+    }
+
+    //Check if num is even
+    if (Modulus(num, "10") == "0")
+    {
+        return false;
+    }
+
+
+    //find an odd d where d*2^r = n-1
+    string d = Sub(num, "1");
+    while (Modulus(d, "10") == "0")
+    {
+        d = Div(d, "10");
+        cout << "\nCount: " << d;
+        cout << "\nNUM: " << num;
+    }
+
+    //Run the miller test k times
+    for (int i = 0; i < k; i++)
+    {
+        if (millerTest(num, d) == false)
+        {
+            return false;
+        }
+    }
+
+
+    return true;
+}
+
+
+//Returns true if prime
+bool ELGAMAL::millerTest(string num, string d)
+{
+
+    //Declare variables
+    string a = getRandom("10", Sub(num, "10"));
+    string x = ModExpo(a, d, num);;
+
+
+    //Prime checking
+    if (x == "1" || x == Sub(num, "1"))
+    {
+        return true;
+    }
+
+
+    while (d != Sub(num, "1"))
+    {
+        x = ModExpo(x, x, num);
+        d = Multiply(d, "10");
+
+        
+
+        if (x == "1")
+        {
+            return false;
+        }
+        else if (x == Sub(num, "1"))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
