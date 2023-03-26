@@ -23,5 +23,7 @@ int main(){
         cout << sum[i];
     }
 
+    sendsKey.getPublicKey_fromFile();
+
     return 0;
 }

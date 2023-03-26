@@ -13,23 +13,61 @@ ELGAMAL::ELGAMAL()
 
 
 //* Getter/Setter Functions
-void ELGAMAL::getPublicKey_fromFileStream()
+void ELGAMAL::getPublicKey_fromFile()
 {
+    string line;
+    fin.open("Public_key.txt");
+
+    //Get prime from file
+    getline(fin, line);
+    line = line.substr(line.find(": ")+2); // increment to cut out the ": "
+    prime = line;
+
+    //Get generator from file
+    getline(fin, line);
+    line = line.substr(line.find(": ")+2);
+    generator = line;
+
+    //Get generator_pow_private_key from file
+    getline(fin, line);
+    line = line.substr(line.find(": ")+2);
+    generator_pow_private_key = line;
 
 }
 
-void ELGAMAL::setPrime()
+
+void ELGAMAL::getPlainText_fromFile()
 {
+
+    string line;
+    plain_text = "";
+    fin.open("Plain_text.txt");
+
+    //read the whole plain text
+    while (fin)
+    {
+        //Get plain text from file
+        getline(fin, line);
+        plain_text += line;
+    }
 
 }
 
-void ELGAMAL::setGenerator()
+
+void ELGAMAL::getCipherText_fromFile()
 {
 
-}
+    string line;
+    cipher_text = "";
+    fin.open("Cipher_text.txt");
 
-void ELGAMAL::setGen_PowA()
-{
+    //read the whole cipher text
+    while (fin)
+    {
+        //Get cipher text from file
+        getline(fin, line);
+        cipher_text += line;
+    }
 
 }
 

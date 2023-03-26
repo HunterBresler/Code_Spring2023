@@ -15,16 +15,19 @@ class ELGAMAL
         string generator;
         string generator_pow_private_key;
         string private_key;
+        string plain_text;
+        string cipher_text;
+        ofstream fout;
+        ifstream fin;
 
     public:
         //*Constructors
         ELGAMAL();
 
         //* Getter/Setter Functions
-        void getPublicKey_fromFileStream();
-        void setPrime();
-        void setGenerator();
-        void setGen_PowA();
+        void getPublicKey_fromFile();
+        void getPlainText_fromFile();
+        void getCipherText_fromFile();
 
         //*Binary Calc Functions
         void MakeEqualSize(string &first, string &second);
@@ -35,6 +38,9 @@ class ELGAMAL
         string Xor(string a, string b);
         string Multiply(string X, string Y);
         string Modulus(string divadend, string divisor);
+
+        //*ELGAMAL Functions
+        void generatePrivateKey();
 
 };
 
