@@ -118,38 +118,49 @@ string ELGAMAL::MakeShiftedString(string shiftStr, int shiftCount)
 
 
 //Binary Modular Exponentiation
-string ELGAMAL::ModExpo(string base, string modulo, string exponent)
+string ELGAMAL::ModExpo(string base, string exponent, string modulo)
 {
     
     //Declare variable for return  value
     string result = "1";
 
-    
+    //Short circuit if modulo is 1
+    if (modulo == "1")
+    {
+        return "0";
+    }
+
     //Short circuit to prevent error with the next if statement
     if (exponent.size() == 0)
-    {
+    {   
+        cout << "\nError:Exponent cannot be an empty value";
         return result;
     }
 
     
-    if (exponent[0] == 1)
+    if (exponent[0] == '1')
     {
         result = base;
     }
 
-
+    //Checks for the exponent being 1 or 0
+    if (exponent.size() == 1)
+    {
+        return Modulus(result, modulo);
+    }
     
     for (int i = 1; i < exponent.size(); i++)
     {
 
-        base = Multiply(base, base);// % modulo;
+        result = Modulus(Multiply(result, result), modulo);
 
-        if (exponent[i] == 1)
+        if (exponent[i] == '1')
         {
-            result = Multiply(base, result);// % modulo;
+            result = Modulus(Multiply(base, result), modulo);
         }
 
     }
+
 
     return result;
     
@@ -183,21 +194,64 @@ string ELGAMAL::Add(string add1, string add2)
 }
 
 
+bool ELGAMAL::IsGreaterThan(string large, string small)
+{
+    int lSize = large.size();
+    int sSize = small.size();
+    bool equal = true;
+
+    //check for negatives
+    if (lSize < sSize)
+    {
+        return false;
+    }
+    else if (lSize == sSize) //make sure large is larger than small
+    {
+        for (int i = 0; i < lSize; i++)
+        {
+            if (large[i] != small[i] && small[i] == '1')
+            {
+                return false;
+            }
+            else if (large[i] == '1' && small[i] == '0')
+            {
+                equal = false;
+                break;
+            }
+        }
+
+        //Check if they're equal
+        if (equal)
+        {
+            return false;
+        }
+    }
+
+    return true;
+
+}
+
 //Binary subtraction
 //WILL NOT COMPUTE NEGATIVES
 string ELGAMAL::Sub(string minuend, string subtrahend)
 {
     string sum = "";
 
-    //Make sure they are equal in size
-    MakeEqualSize(minuend, subtrahend);
-
-    //check for negatives (kinda)
-    if (minuend.size() < subtrahend.size() || minuend == subtrahend)
+    //Short circuit if minuend  and subtrahend are equal
+    if (minuend == subtrahend)
     {
-        cout << "Error: ELGAMAL::Sub cannot compute ";
         return "0";
     }
+
+    //Make sure minuend is greater than subtrahend
+    if (!IsGreaterThan(minuend, subtrahend))
+    {
+        cout << "\nError: ELGAMAL::minuend must be larger than subtrahend";
+        return "0";
+    }
+
+    //Make sure they are equal in size
+    MakeEqualSize(minuend, subtrahend);
 
 
     //Replace subtrahend with it's 1s complement
@@ -205,7 +259,6 @@ string ELGAMAL::Sub(string minuend, string subtrahend)
     {
         subtrahend[i] = ((subtrahend[i] == '1') ? '0': '1');
     }
-
 
     //Add minuend and the 1s complement for subtraction
     sum = Add(minuend, subtrahend);
@@ -215,6 +268,12 @@ string ELGAMAL::Sub(string minuend, string subtrahend)
     {
         sum.erase(sum.begin());
         sum = Add(sum, "1");
+    }
+
+    //Remove excess 0s
+    while (sum[0] == '0')
+    {
+        sum.erase(sum.begin());
     }
 
     return sum;
@@ -273,22 +332,42 @@ string ELGAMAL::Modulus(string divadend, string divisor)
 
     string result = divadend;
     string shifted;
-    int len = divadend.size();
+
 
     //Sub
     while (divisor.size() <= result.size())
     {
         if (result[0] == '1')
         {
-            //Uses Xor to divide
+            //Uses Sub to divide
             shifted = MakeShiftedString(divisor, result.size()-divisor.size());
-            result = Xor(shifted, result);
+
+            //Make sure shifted is greater than or equal to result before sub
+            if (IsGreaterThan(result, shifted) || result == shifted)
+            {
+                result = Sub(result, shifted);
+            }
+            else if (result.size() > divisor.size()) //In case the shift makes result larger than divisor
+            {
+                shifted.pop_back();
+                result = Sub(result, shifted);
+            }
+            else
+            {
+                break;
+            }
         }
         else
         {
             result.erase(result.begin());
         }
     }
+
+    //Check for no remainder
+    //if (result.size() == 0)
+    //{
+    //    return "0";
+    //}
 
     return result;
 }

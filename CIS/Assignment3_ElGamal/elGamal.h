@@ -32,9 +32,10 @@ class ELGAMAL
         //*Binary Calc Functions
         void MakeEqualSize(string &first, string &second);
         string MakeShiftedString(string shiftStr, int shiftCount);
-        string ModExpo(string base, string modulo, string exponent);
+        string ModExpo(string base, string exponent, string modulo);
         string Add(string add1, string add2);
         string Sub(string sub1, string sub2);
+        bool IsGreaterThan(string large, string small);
         string Xor(string a, string b);
         string Multiply(string X, string Y);
         string Modulus(string divadend, string divisor);

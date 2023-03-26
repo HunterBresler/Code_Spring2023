@@ -13,9 +13,10 @@ int main(){
     ELGAMAL hasKey, sendsKey;
 
 
-    string add1 = "1111";
-    string add2 = "110";
-    string sum = hasKey.Modulus(add1, add2);
+    string base = "10111";
+    string exponent = "10110";
+    string modulo = "10111";
+    string sum = hasKey.ModExpo(base,exponent, modulo);
 
     cout << "\nBinary print: ";
     for (int i = 0; i < sum.size(); i++)
