@@ -15,24 +15,24 @@ int main(){
     //Set seed for random numbers
     srand(time(NULL));
 
-    ELGAMAL hasKey, sendsKey;
+    ELGAMAL hasKey("Has Key"), sender("Sender");
 
 
-    string base = "1110";
-    string exponent = "10110";
-    string modulo = "1000110001";
-    string sum = hasKey.Div(modulo, "10");
+    //Sender encrypts and sends message
+    sender.Drive();
+
+    //Has Key receives and decrypts message
+    hasKey.Drive();
 
 
-    cout << "\nBinary print: ";
-    for (int i = 0; i < sum.size(); i++)
-    {
-        cout << sum[i];
-    }
+    
+    //Test encryption
+    ///sendsKey.getPublicKey_fromFile();
 
-    sendsKey.getPublicKey_fromFile();
-
-    cout << "\n\nIs " << modulo << " prime: " << hasKey.isPrime(modulo, modulo.size() + 10);
+    //string gen = sendsKey.generateGenerator(sendsKey.getPrime());
+    //cout << "\nTest: " << 1;
+    //cout << "\nPrime: " << sendsKey.getPrime();
 
     return 0;
 }
+

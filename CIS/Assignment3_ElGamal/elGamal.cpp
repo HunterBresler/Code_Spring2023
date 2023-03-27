@@ -3,19 +3,45 @@
 #include <string>
 #include <fstream>
 #include <cstdlib>
+#include <vector>
 #include "elGamal.h"
 
 
 //*Constructors
 ELGAMAL::ELGAMAL()
 {
+    char response;
 
+    //Ask if the want to generate keys
+    cout << "\nWould you like to generate keys (y/n): ";
+    cin >> response;
+
+    if (response == 'y' || response == 'Y')
+    {
+        generateKeys();
+    }
+}
+
+
+ELGAMAL::ELGAMAL(string user)
+{
+    char response;
+
+    //Ask if the want to generate keys
+    cout << endl << user << " would you like to generate keys (y/n): ";
+    cin >> response;
+
+    if (response == 'y' || response == 'Y')
+    {
+        generateKeys();
+    }
 }
 
 
 //* Getter/Setter Functions
 void ELGAMAL::getPublicKey_fromFile()
 {
+
     string line;
     fin.open("Public_key.txt");
 
@@ -34,6 +60,23 @@ void ELGAMAL::getPublicKey_fromFile()
     line = line.substr(line.find(": ")+2);
     generator_pow_private_key = line;
 
+    fin.close();
+}
+
+
+void ELGAMAL::getPrivateKey_fromFile()
+{
+
+    string line;
+    fin.open("private_key.txt");
+    
+
+    // Get private key from file
+    getline(fin, line);
+    line = line.substr(line.find(": ") + 2); // increment to cut out the ": "
+    private_key = line;
+
+    fin.close();
 }
 
 
@@ -41,17 +84,25 @@ void ELGAMAL::getPlainText_fromFile()
 {
 
     string line;
-    plain_text = "";
     fin.open("Plain_text.txt");
 
-    //read the whole plain text
-    while (fin)
-    {
-        //Get plain text from file
-        getline(fin, line);
-        plain_text += line;
-    }
 
+    // Get plain textkey from file
+    getline(fin, line);
+    line = line.substr(line.find(": ") + 2); // increment to cut out the ": "
+    plain_text = line;
+
+
+    //TODO later
+    //read the whole plain text
+    //while (fin)
+    //{
+        //Get plain text from file
+    //    getline(fin, line);
+    //    plain_text += line;
+    //}
+
+    fin.close();
 }
 
 
@@ -59,18 +110,53 @@ void ELGAMAL::getCipherText_fromFile()
 {
 
     string line;
-    cipher_text = "";
     fin.open("Cipher_text.txt");
 
-    //read the whole cipher text
-    while (fin)
-    {
-        //Get cipher text from file
-        getline(fin, line);
-        cipher_text += line;
-    }
+    // Get gamma from file
+    getline(fin, line);
+    line = line.substr(line.find(": ") + 2); // increment to cut out the ": "
+    gamma = line;
 
+    // Get delta text from file
+    getline(fin, line);
+    line = line.substr(line.find(": ") + 2); // increment to cut out the ": "
+    delta = line;
+
+    //TODO later
+    //read the whole cipher text
+    //while (fin)
+    //{
+        //Get cipher text from file
+    //    getline(fin, line);
+    //    cipher_text += line;
+    //}
+
+    fin.close();
 }
+
+string ELGAMAL::getPrime()
+{
+    return prime;
+}
+
+
+string ELGAMAL::getGenerator()
+{
+    return generator;
+}
+
+
+string ELGAMAL::getGeneratorpPowPrivateKey()
+{
+    return generator_pow_private_key;
+}
+
+
+string ELGAMAL::getPrivateKey()
+{
+    return private_key;
+}
+
 
 
 //*Binary Calc Functions
@@ -461,21 +547,130 @@ string ELGAMAL::getRandom(string min, string max)
     }
 
 
-    //Recurs until random num is < max and random num > min
-    if (IsGreaterThan(randomNum, max) || randomNum == max || !IsGreaterThan(randomNum, min))
+    //Recurs until random num is <= max and random num > min
+    if (IsGreaterThan(randomNum, max) || !IsGreaterThan(randomNum, min))
     {
         return getRandom(min, max);
     }
+
 
     return randomNum;
 }
 
 
-
-//*ELGAMAL Functions
-void ELGAMAL::generatePrivateKey()
+//Adds to a list of prime factors taken by reference
+void ELGAMAL::findPrimeFactors(vector<string> &primes, string phi)
 {
 
+    //cout << "\nPrime factors in progress...";
+    //cout << "\nPrime factors added: ";
+
+    //Add all factors of 2
+    while (Modulus(phi, "10") == "0")
+    {
+        primes.push_back("10");
+        phi = Div(phi, "10");
+        //cout << ", " << primes[primes.size()-1];
+    }
+
+
+    //Add all other factors > 2
+    // (int i = 3; i^2 <= phi; i = i+2): add by 2 to skip over already covered evens
+    for (string i = "11"; !IsGreaterThan(Multiply(i, i), phi); i = Add(i, "10"))
+    {   
+        //Add all factors of i
+        while (Modulus(phi, i) == "0")
+        {
+            primes.push_back(i);
+            phi = Div(phi, i);
+            //cout << ", " << primes[primes.size()-1];
+        }
+    }
+
+    //Add n if it is > 2
+    //!Not sure why
+    if (IsGreaterThan(phi, "10"))
+    {
+        primes.push_back(phi);
+    }
+}
+
+
+string ELGAMAL::generateGenerator(string num)
+{
+
+    string phi = Sub(num, "1");
+    vector<string> primeFactors = {};
+    findPrimeFactors(primeFactors, phi);
+    //cout << "\nPrime factors generated. Size = " << primeFactors.size();
+    string testGenerator = "";
+
+    //Runs until a generator is found
+    //!May rerun generators
+    while (true)
+    {
+
+        bool isGenerator = true;
+        testGenerator = getRandom("10", phi);
+
+        for (int index = 0; index != primeFactors.size() - 1; index++)
+        {
+            if (ModExpo(testGenerator, Div(phi, primeFactors[index]), num) == "1")
+            {
+                isGenerator = false;
+                break;
+            }
+        }
+
+        if (isGenerator)
+        {
+            return testGenerator;
+        } 
+   }
+}
+
+//*ELGAMAL Functions
+//Generates private and public keys and writes them to file
+void ELGAMAL::generateKeys() 
+{
+
+    int keySize = 0;
+
+    while (true)
+    {
+        cout << "\nEnter a bit size for your private key (16, 32, 64, or 128): ";
+        cin >> keySize;
+
+        if (keySize == 16 || keySize == 32 || keySize == 64 || keySize == 128)
+        {
+            break;
+        }
+        cout << "\nInvalid key size. Try again";
+    }
+
+    //Generate public key and private key
+    //Gives progress updates through terminal
+    prime = generatePrime(keySize);
+    // << "\nPrime generated. Size = " << prime.size();
+    private_key = getRandom("1", Sub(prime, "10"));
+    //cout << "\nPrivate key generated. Size = " << private_key.size();
+    generator = generateGenerator(prime);
+    //cout << "\nGenerator generated. Size = " << generator.size();
+    generator_pow_private_key = ModExpo(generator, private_key, prime);
+    //cout << "\nGenerator^private key generated. Size = " << generator_pow_private_key.size();
+
+    //Write private key to a file
+    fout.open("Private_key.txt", ios::out);
+    fout << "Private Key: " << private_key;
+    fout.close();
+
+    //Write public key to a file
+    fout.open("Public_key.txt", ios::out);
+    fout << "Prime: " << private_key << endl;
+    fout << "Generator: " << generator << endl;
+    fout << "Generator^Private Key: " << generator_pow_private_key << endl;
+    fout.close();
+    
 }
 
 
@@ -483,7 +678,7 @@ bool ELGAMAL::isPrime(string num, int k)
 {
 
     //Base cases
-    if (num == "1")
+    if (num == "1" || num == "100")
     {
         return false;
     }
@@ -504,13 +699,13 @@ bool ELGAMAL::isPrime(string num, int k)
     while (Modulus(d, "10") == "0")
     {
         d = Div(d, "10");
-        cout << "\nCount: " << d;
-        cout << "\nNUM: " << num;
     }
+
 
     //Run the miller test k times
     for (int i = 0; i < k; i++)
     {
+        //If num is composite
         if (millerTest(num, d) == false)
         {
             return false;
@@ -522,38 +717,131 @@ bool ELGAMAL::isPrime(string num, int k)
 }
 
 
+//!Might not work
 //Returns true if prime
 bool ELGAMAL::millerTest(string num, string d)
 {
 
     //Declare variables
+    string numMinus1 = Sub(num, "1");
     string a = getRandom("10", Sub(num, "10"));
-    string x = ModExpo(a, d, num);;
-
+    string x = ModExpo(a, d, num);
 
     //Prime checking
-    if (x == "1" || x == Sub(num, "1"))
+    if (x == "1" || x == numMinus1)
     {
         return true;
     }
 
 
-    while (d != Sub(num, "1"))
+    while (d != numMinus1)
     {
-        x = ModExpo(x, x, num);
+        x = ModExpo(x, "10", num);
         d = Multiply(d, "10");
-
-        
+ 
 
         if (x == "1")
         {
             return false;
         }
-        else if (x == Sub(num, "1"))
+        else if (x == numMinus1)
         {
             return true;
         }
     }
 
     return false;
+}
+
+
+string ELGAMAL::generatePrime(int Size)
+{
+    string genPrime = "1";
+    string minValue = "";
+
+    //Fill minValue
+    for (int i = 0; i < Size-1; i++)
+    {
+        minValue += "1";
+    }
+
+    while (!isPrime(genPrime, genPrime.size() + 10))
+    {
+        genPrime = getRandom(minValue, minValue + "1"); //Generates a prime of Size bits
+    }
+
+    return genPrime;
+}
+
+//Gets public key through member variable and sends cipher text to file
+void ELGAMAL::encrypt()
+{
+    
+    //Calculate ELGAMAL Variables gamma and delta
+    string k = getRandom("1", Sub(prime, "10"));                             //Get random k, 1 <= k <= p-2
+    gamma = ModExpo(generator, k, prime);                                       //gen^k mod p
+    delta = ModExpo(Multiply(plain_text, generator_pow_private_key), k, prime); //(gen^a)^k mod p
+
+    //Send Cipher text
+    fout.open("Cipher_text.txt", ios::out);
+    fout << "Gamma: " << gamma << endl;
+    fout << "Delta: " << delta << endl;
+    fout.close();
+    
+}
+
+
+//Gets private key from member variable and sends plain text to file
+void ELGAMAL::decrypt()
+{
+
+    //Calculate exponent
+    string exponent = Sub(prime, private_key); 
+    exponent = Sub(exponent, "1");       
+
+    //Calculate gamma^exponent mod prime and delta mod prime              
+    string modGamma = ModExpo(gamma, exponent, prime);
+    string modDelta = Modulus(delta, prime);
+
+    //Calculate plain text
+    plain_text = Modulus(Multiply(modGamma, modDelta), prime);
+
+    //Send Plain text
+    fout.open("Plain_text.txt", ios::out);
+    fout << "Plain_text: " << plain_text << endl;
+    fout.close();
+
+}
+
+
+
+//*Driver Function
+void ELGAMAL::Drive()
+{  
+
+    char response;
+
+    //Ask for decryption or encription
+    cout << "\nWould you like to decrypt or encrypt a message (d/e): ";
+    cin >> response;
+
+    if (response == 'd' || response == 'D')
+    {
+        //Make sure decrypt has access to cipher text and public key
+        getCipherText_fromFile();
+        getPublicKey_fromFile();
+        decrypt();
+    }
+    else if (response == 'e' || response == 'E')
+    {
+        //Make sure encrypt has access to plain text and private key
+        getPlainText_fromFile();
+        getPrivateKey_fromFile();
+        encrypt();
+    }
+    else
+    {
+        cout << "\nInvalid choice. Program terminated";
+        exit(1);
+    }
 }
