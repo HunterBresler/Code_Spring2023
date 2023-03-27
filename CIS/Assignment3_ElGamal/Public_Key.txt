@@ -1,3 +1,3 @@
-Prime: 101001
-Generator: 11001111100
-Generator^Private Key: 111000110100101
+Prime: 1110100000001111
+Generator: 1010011101110
+Generator^Private Key: 101100010010001

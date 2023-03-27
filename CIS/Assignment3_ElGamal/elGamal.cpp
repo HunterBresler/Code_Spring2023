@@ -525,19 +525,10 @@ string ELGAMAL::Div(string divadend, string divisor)
 string ELGAMAL::getRandom(string min, string max)
 {
 
-    int randSize = rand() % (max.size()+1);
     string randomNum = "";
 
-
-    //Recurs until randSize is larger than minSize
-    if (randSize <= min.size())
-    {
-        return getRandom(min, max);
-    }
-
-
     //Fill in random sized string with random binary values
-    for (int i = 0; i < randSize; i++)
+    for (int i = 0; i < max.size(); i++)
     {
         randomNum += ((rand() % 2 == 1) ? '1': '0');
     }
@@ -605,7 +596,6 @@ string ELGAMAL::generateGenerator(string num)
     string phi = Sub(num, "1");
     vector<string> primeFactors = {};
     findPrimeFactors(primeFactors, phi);
-    //cout << "\nPrime factors generated. Size = " << primeFactors.size();
     string testGenerator = "";
 
     //Runs until a generator is found
@@ -614,7 +604,7 @@ string ELGAMAL::generateGenerator(string num)
     {
 
         bool isGenerator = true;
-        testGenerator = getRandom("10", phi);
+        testGenerator = getRandom("10", prime);
 
         for (int index = 0; index != primeFactors.size() - 1; index++)
         {
@@ -629,6 +619,7 @@ string ELGAMAL::generateGenerator(string num)
         {
             return testGenerator;
         } 
+
    }
 }
 
@@ -655,13 +646,14 @@ void ELGAMAL::generateKeys()
     //Generate public key and private key
     //Gives progress updates through terminal
     prime = generatePrime(keySize);
-    // << "\nPrime generated. Size = " << prime.size();
+    cout << "\nPrime generated: " << prime;
     private_key = getRandom("1", Sub(prime, "10"));
-    //cout << "\nPrivate key generated. Size = " << private_key.size();
+    cout << "\nPrivate key generated: " << private_key;
     generator = generateGenerator(prime);
-    //cout << "\nGenerator generated. Size = " << generator.size();
+    cout << "\nGenerator generated: " << generator;
     generator_pow_private_key = ModExpo(generator, private_key, prime);
-    //cout << "\nGenerator^private key generated. Size = " << generator_pow_private_key.size();
+    cout << "\nGenerator^private key generated: " << generator_pow_private_key;
+    cout << endl;
 
     //Write private key to a file
     fout.open("Private_key.txt", ios::out);
@@ -670,7 +662,7 @@ void ELGAMAL::generateKeys()
 
     //Write public key to a file
     fout.open("Public_key.txt", ios::out);
-    fout << "Prime: " << private_key << endl;
+    fout << "Prime: " << prime << endl;
     fout << "Generator: " << generator << endl;
     fout << "Generator^Private Key: " << generator_pow_private_key << endl;
     fout.close();
@@ -805,7 +797,13 @@ void ELGAMAL::decrypt()
 
     //Calculate exponent
     string exponent = Sub(prime, private_key); 
-    exponent = Sub(exponent, "1");       
+    exponent = Sub(exponent, "1");      
+
+    //string modgamma = gamma;
+    //for (string i = 0; !IsGreaterThan(i, exponent); i = Add(i, "1"))
+    //{
+    //    modgamma = Multiply(modgamma, modgamma);
+    //} 
 
     //Calculate gamma^exponent mod prime and delta mod prime              
     string modGamma = ModExpo(gamma, exponent, prime);
@@ -813,6 +811,7 @@ void ELGAMAL::decrypt()
 
     //Calculate plain text
     plain_text = Modulus(Multiply(modGamma, modDelta), prime);
+    //plain_text = Modulus(Multiply(modgamma, delta), prime);
 
     //Send Plain text
     fout.open("Plain_text.txt", ios::out);
