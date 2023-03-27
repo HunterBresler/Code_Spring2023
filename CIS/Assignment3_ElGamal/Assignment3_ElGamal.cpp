@@ -9,20 +9,20 @@
 
 using namespace std;
 
-
+//TODO: add getPlaintext() and find out why generator generation sucks
 int main(){
 
     //Set seed for random numbers
     srand(time(NULL));
 
-    ELGAMAL hasKey("Has Key"), sender("Sender");
+    ELGAMAL hasKey("Has Key"); //, sender("Sender");
 
 
     //Sender encrypts and sends message
-    sender.Drive();
+    //sender.Drive();
 
     //Has Key receives and decrypts message
-    hasKey.Drive();
+    //hasKey.Drive();
 
 
     

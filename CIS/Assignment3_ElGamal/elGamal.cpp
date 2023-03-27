@@ -636,11 +636,11 @@ void ELGAMAL::generateKeys()
         cout << "\nEnter a bit size for your private key (16, 32, 64, or 128): ";
         cin >> keySize;
 
-        if (keySize == 16 || keySize == 32 || keySize == 64 || keySize == 128)
-        {
+        //if (keySize == 16 || keySize == 32 || keySize == 64 || keySize == 128)
+        //{
             break;
-        }
-        cout << "\nInvalid key size. Try again";
+        //}
+        //cout << "\nInvalid key size. Try again";
     }
 
     //Generate public key and private key
@@ -776,9 +776,10 @@ void ELGAMAL::encrypt()
     ofstream fout;
 
     //Calculate ELGAMAL Variables gamma and delta
-    string k = getRandom("1", Sub(prime, "10"));                             //Get random k, 1 <= k <= p-2
-    gamma = ModExpo(generator, k, prime);                                       //gen^k mod p
-    delta = ModExpo(Multiply(plain_text, generator_pow_private_key), k, prime); //(gen^a)^k mod p
+    string k = getRandom("1", Sub(prime, "10"));          //Get random k, 1 <= k <= p-2
+    gamma = ModExpo(generator, k, prime);                 //gen^k mod p
+    delta = ModExpo(generator_pow_private_key, k, prime); //(gen^a)^k mod p
+    delta = Modulus(Multiply(delta, plain_text), prime);  //above*message mod p
 
     //Send Cipher text
     fout.open("Cipher_text.txt", ios::out);
