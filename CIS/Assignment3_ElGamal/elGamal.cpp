@@ -41,6 +41,7 @@ ELGAMAL::ELGAMAL(string user)
 //* Getter/Setter Functions
 void ELGAMAL::getPublicKey_fromFile()
 {
+    ifstream fin;
 
     string line;
     fin.open("Public_key.txt");
@@ -66,6 +67,7 @@ void ELGAMAL::getPublicKey_fromFile()
 
 void ELGAMAL::getPrivateKey_fromFile()
 {
+    ifstream fin;
 
     string line;
     fin.open("private_key.txt");
@@ -82,7 +84,7 @@ void ELGAMAL::getPrivateKey_fromFile()
 
 void ELGAMAL::getPlainText_fromFile()
 {
-
+    ifstream fin;
     string line;
     fin.open("Plain_text.txt");
 
@@ -108,6 +110,7 @@ void ELGAMAL::getPlainText_fromFile()
 
 void ELGAMAL::getCipherText_fromFile()
 {
+    ifstream fin;
 
     string line;
     fin.open("Cipher_text.txt");
@@ -521,7 +524,7 @@ string ELGAMAL::Div(string divadend, string divisor)
 
 string ELGAMAL::getRandom(string min, string max)
 {
-    
+
     int randSize = rand() % (max.size()+1);
     string randomNum = "";
 
@@ -635,6 +638,7 @@ void ELGAMAL::generateKeys()
 {
 
     int keySize = 0;
+    ofstream fout;
 
     while (true)
     {
@@ -776,7 +780,9 @@ string ELGAMAL::generatePrime(int Size)
 //Gets public key through member variable and sends cipher text to file
 void ELGAMAL::encrypt()
 {
-    
+
+    ofstream fout;
+
     //Calculate ELGAMAL Variables gamma and delta
     string k = getRandom("1", Sub(prime, "10"));                             //Get random k, 1 <= k <= p-2
     gamma = ModExpo(generator, k, prime);                                       //gen^k mod p
@@ -794,6 +800,8 @@ void ELGAMAL::encrypt()
 //Gets private key from member variable and sends plain text to file
 void ELGAMAL::decrypt()
 {
+
+    ofstream fout;
 
     //Calculate exponent
     string exponent = Sub(prime, private_key); 
@@ -820,6 +828,9 @@ void ELGAMAL::Drive()
 {  
 
     char response;
+
+    //Get public key from file
+    getPublicKey_fromFile();
 
     //Ask for decryption or encription
     cout << "\nWould you like to decrypt or encrypt a message (d/e): ";

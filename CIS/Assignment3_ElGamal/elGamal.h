@@ -28,10 +28,6 @@ class ELGAMAL
         string gamma;
         string delta;
 
-        //*File streams
-        ofstream fout;
-        ifstream fin;
-
         //*User
         //string name;
 
