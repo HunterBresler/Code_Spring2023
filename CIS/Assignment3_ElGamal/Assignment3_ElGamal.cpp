@@ -36,7 +36,7 @@ int main(){
     */
 
     //Test Dev Mode (time test as well)
-    int keySize = 64;
+    int keySize = 44;
     ELGAMAL test(keySize);
 
     //Calc and print time
