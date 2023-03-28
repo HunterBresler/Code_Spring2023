@@ -10,31 +10,43 @@
 //*Constructors
 ELGAMAL::ELGAMAL()
 {
-    char response;
 
-    //Ask if the want to generate keys
-    cout << "\nWould you like to generate keys (y/n): ";
-    cin >> response;
-
-    if (response == 'y' || response == 'Y')
-    {
-        generateKeys();
-    }
 }
 
 
 ELGAMAL::ELGAMAL(string user)
 {
     char response = 'n';
+    int keySize;
 
     //Ask if the want to generate keys
     cout << endl << user << " would you like to generate keys (y/n): ";
-    //cin >> response;
+    cin >> response;
 
     if (response == 'y' || response == 'Y')
     {
-        generateKeys();
+        //Gets key size
+        while (true)
+        {
+            cout << "\nEnter a bit size for your private key (16, 32, 64, or 128): ";
+            cin >> keySize;
+
+            if (keySize == 16 || keySize == 32 || keySize == 64 || keySize == 128)
+            {
+                break;
+            }
+            cout << "\nInvalid key size. Try again";
+        }
+
+        generateKeys(keySize);
     }
+}
+
+ELGAMAL::ELGAMAL(int test)
+{
+    generateKeys(test);
+    encrypt();
+    decrypt();
 }
 
 
@@ -583,23 +595,11 @@ string ELGAMAL::generateGenerator(string num)
 
 //*ELGAMAL Functions
 //Generates private and public keys and writes them to file
-void ELGAMAL::generateKeys() 
+void ELGAMAL::generateKeys(int keySize) 
 {
 
-    int keySize = 0;
     ofstream fout;
 
-    while (true)
-    {
-        cout << "\nEnter a bit size for your private key (16, 32, 64, or 128): ";
-        cin >> keySize;
-
-        if (keySize == 16 || keySize == 32 || keySize == 64 || keySize == 128)
-        {
-            break;
-        }
-        cout << "\nInvalid key size. Try again";
-    }
 
     //Generate public key and private key
     //Gives progress updates through terminal
@@ -671,7 +671,6 @@ bool ELGAMAL::isPrime(string num, int k)
 }
 
 
-//!Might not work
 //Returns true if prime
 bool ELGAMAL::millerTest(string num, string d)
 {
@@ -712,6 +711,7 @@ string ELGAMAL::generateSafePrime(int Size)
 {
     string genPrime = "1";
     string minValue = "";
+    int failCount = 0;
     bool safe = false;
 
 
@@ -741,7 +741,8 @@ string ELGAMAL::generateSafePrime(int Size)
             safe = true;
         }
 
-        cout << "\nFail";
+        failCount++;
+        cout << "\nSafePrime Fail #" << failCount;
 
     }
 
@@ -786,19 +787,12 @@ void ELGAMAL::decrypt()
     string exponent = Sub(prime, private_key); 
     exponent = Sub(exponent, "1");      
 
-    //string modgamma = gamma;
-    //for (string i = 0; !IsGreaterThan(i, exponent); i = Add(i, "1"))
-    //{
-    //    modgamma = Multiply(modgamma, modgamma);
-    //} 
-
     //Calculate gamma^exponent mod prime and delta mod prime              
     string modGamma = ModExpo(gamma, exponent, prime);
     string modDelta = Modulus(delta, prime);
 
     //Calculate plain text
     plain_text = Modulus(Multiply(modGamma, modDelta), prime);
-    //plain_text = Modulus(Multiply(modgamma, delta), prime);
 
     //Send Plain text
     fout.open("Plain_text.txt", ios::out);
@@ -813,23 +807,54 @@ void ELGAMAL::decrypt()
 void ELGAMAL::Drive()
 {  
 
-    char response;
+    char response = '1';
+    int keySize;
 
-    //Ask for decryption or encription
-    cout << "\nWould you like to decrypt or encrypt a message (d/e): ";
-    cin >> response;
+    while (response != '0')
+    {
+        //Ask if the want to generate keys
+        cout << endl << "Would you like to generate keys (y/n): ";
+        cin >> response;
 
-    if (response == 'd' || response == 'D')
-    {
-        decrypt();
+        if (response == 'y' || response == 'Y')
+        {
+            //Gets key size
+            while (true)
+            {
+                cout << "\nEnter a bit size for your private key (16, 32, 64, or 128): ";
+                cin >> keySize;
+
+                if (keySize == 16 || keySize == 32 || keySize == 64 || keySize == 128)
+                {
+                    break;
+                }
+                cout << "\nInvalid key size. Try again";
+            }
+        }
+
+
+        //Ask for decryption or encription
+        cout << "\nWould you like to decrypt or encrypt a message (d/e): ";
+        cin >> response;
+
+        if (response == 'd' || response == 'D')
+        {
+            decrypt();
+        }
+        else if (response == 'e' || response == 'E')
+        {
+            encrypt();
+        }
+        else
+        {
+            cout << "\nInvalid choice";
+        }
+
+
+        //Ask for termination
+        cout << "\nWould you like to end the program?\nIf yes enter 0. If not, enter 1: ";
+        cin >> response;
     }
-    else if (response == 'e' || response == 'E')
-    {
-        encrypt();
-    }
-    else
-    {
-        cout << "\nInvalid choice. Program terminated";
-        exit(1);
-    }
+
+    cout << "\nThank you for using the ElGamal program!";
 }

@@ -10,7 +10,7 @@
 
 using namespace std;
 
-//TODO: add getPlaintext() and find out why generator generation sucks
+
 int main(){
 
     //Test time
@@ -19,13 +19,25 @@ int main(){
     //Set seed for random numbers
     srand(time(NULL));
 
-    ELGAMAL hasKey("Has Key"), sender("Sender");
+    //Comment out what you aren't testing
+    /*
+    //Test Main Class Functions
+    ELGAMAL memberTest;
 
-    //Sender encrypts and sends message
-    sender.encrypt();
+    memberTest.Drive();
+    memberTest.encrypt();
+    memberTest.decrypt();
 
-    //Has Key receives and decrypts message
-    hasKey.decrypt();
+    //Test User Functionality
+    ELGAMAL user("Jeff");
+
+    user.encrypt();
+    user.decrypt();
+    */
+
+    //Test Dev Mode (time test as well)
+    int keySize = 64;
+    ELGAMAL test(keySize);
 
     //Calc and print time
     auto end = chrono::high_resolution_clock::now();

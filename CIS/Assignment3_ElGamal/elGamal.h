@@ -35,6 +35,7 @@ class ELGAMAL
         //*Constructors
         ELGAMAL();
         ELGAMAL(string user);
+        ELGAMAL(int test); //For testing
 
         //* Getter/Setter Functions
         void getPublicKey_fromFile();
@@ -62,7 +63,7 @@ class ELGAMAL
         string generateGenerator(string prime);
 
         //*ELGAMAL Functions
-        void generateKeys();
+        void generateKeys(int keySize);
         bool isPrime(string num, int k);
         bool millerTest(string num, string d);
         string generateSafePrime(int Size);
