@@ -36,7 +36,7 @@ int main(){
     */
 
     //Test Dev Mode (time test as well)
-    int keySize = 256;
+    int keySize = 128;
     string safePrimeCheckCount = "111111";
     ELGAMAL test(keySize, safePrimeCheckCount);
 
