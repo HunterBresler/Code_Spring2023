@@ -432,7 +432,7 @@ string ELGAMAL::Modulus(string divadend, string divisor)
             //Uses Sub to divide
             shifted = MakeShiftedString(divisor, result.size()-divisor.size());
 
-            //Make sure shifted is greater than or equal to result before sub
+            //Make sure result is greater than or equal to shifted before sub
             if (IsGreaterThan(result, shifted) || result == shifted)
             {
                 result = Sub(result, shifted);
@@ -484,7 +484,7 @@ string ELGAMAL::Div(string divadend, string divisor)
             //Uses Sub to divide
             shifted = MakeShiftedString(divisor, divadend.size()-divisor.size());
 
-            //Make sure shifted is greater than or equal to divadend before sub
+            //Make sure divadend is greater than or equal to shifted before sub
             if (IsGreaterThan(divadend, shifted) || divadend == shifted)
             {
                 result += "1";
@@ -556,15 +556,11 @@ string ELGAMAL::getRandom(string min, string max)
 void ELGAMAL::findPrimeFactors(vector<string> &primes, string phi)
 {
 
-    //cout << "\nPrime factors in progress...";
-    //cout << "\nPrime factors added: ";
-
     //Add all factors of 2
     while (Modulus(phi, "10") == "0")
     {
         primes.push_back("10");
         phi = Div(phi, "10");
-        //cout << ", " << primes[primes.size()-1];
     }
 
 
@@ -577,7 +573,6 @@ void ELGAMAL::findPrimeFactors(vector<string> &primes, string phi)
         {
             primes.push_back(i);
             phi = Div(phi, i);
-            //cout << ", " << primes[primes.size()-1];
         }
     }
 
@@ -597,16 +592,17 @@ string ELGAMAL::generateGenerator(string num)
     vector<string> primeFactors = {};
     findPrimeFactors(primeFactors, phi);
     string testGenerator = "";
+    bool isGenerator = false;
 
     //Runs until a generator is found
     //!May rerun generators
-    while (true)
+    while (!isGenerator)
     {
 
-        bool isGenerator = true;
+        isGenerator = true;
         testGenerator = getRandom("10", prime);
 
-        for (int index = 0; index != primeFactors.size() - 1; index++)
+        for (int index = 0; index < primeFactors.size(); index++)
         {
             if (ModExpo(testGenerator, Div(phi, primeFactors[index]), num) == "1")
             {
@@ -620,7 +616,11 @@ string ELGAMAL::generateGenerator(string num)
             return testGenerator;
         } 
 
-   }
+    }
+
+    //Fail check
+    cout << "\nGenerator Failed to generate";
+    exit(2);
 }
 
 //*ELGAMAL Functions
@@ -636,11 +636,11 @@ void ELGAMAL::generateKeys()
         cout << "\nEnter a bit size for your private key (16, 32, 64, or 128): ";
         cin >> keySize;
 
-        //if (keySize == 16 || keySize == 32 || keySize == 64 || keySize == 128)
-        //{
+        if (keySize == 16 || keySize == 32 || keySize == 64 || keySize == 128)
+        {
             break;
-        //}
-        //cout << "\nInvalid key size. Try again";
+        }
+        cout << "\nInvalid key size. Try again";
     }
 
     //Generate public key and private key
