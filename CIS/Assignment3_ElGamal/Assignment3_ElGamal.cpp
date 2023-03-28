@@ -15,7 +15,10 @@ int main(){
     //Set seed for random numbers
     srand(time(NULL));
 
-    ELGAMAL hasKey("Has Key"); //, sender("Sender");
+    ELGAMAL hasKey("Has Key");//, sender("Sender");
+
+    string result = hasKey.Div("11110", "11");
+    cout << "\nTEST: " << result;
 
 
     //Sender encrypts and sends message
@@ -23,15 +26,6 @@ int main(){
 
     //Has Key receives and decrypts message
     //hasKey.Drive();
-
-
-    
-    //Test encryption
-    ///sendsKey.getPublicKey_fromFile();
-
-    //string gen = sendsKey.generateGenerator(sendsKey.getPrime());
-    //cout << "\nTest: " << 1;
-    //cout << "\nPrime: " << sendsKey.getPrime();
 
     return 0;
 }

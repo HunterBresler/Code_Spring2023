@@ -461,10 +461,19 @@ string ELGAMAL::Div(string divadend, string divisor)
 {
     string result = "";
     string shifted;
-    int zeros;
+    string beingSubbed = "";
 
     //Check for error cases
-    if (divadend == divisor)
+    if (divisor == "0")
+    {
+        cout << "\nDivide by 0: ERROR";
+        exit(4);
+    }
+    else if (divadend == "0")
+    {
+        return "0";
+    }
+    else if (divadend == divisor)
     {
         return "1";
     }
@@ -474,51 +483,39 @@ string ELGAMAL::Div(string divadend, string divisor)
         return "0";
     }
 
-    //Sub
-    while (divisor.size() <= divadend.size())
+    //Long division
+    for (int i = 0; i < divadend.size(); i++)
     {
-        zeros = divadend.size(); //Keeps track of how many "0"s to add in between subtractions
 
-        if (divadend[0] == '1')
+        //Remove leading zeros
+        if (beingSubbed[0] == '0')
         {
-            //Uses Sub to divide
-            shifted = MakeShiftedString(divisor, divadend.size()-divisor.size());
-
-            //Make sure divadend is greater than or equal to shifted before sub
-            if (IsGreaterThan(divadend, shifted) || divadend == shifted)
-            {
-                result += "1";
-                divadend = Sub(divadend, shifted);
-            }
-            else if (divadend.size() > divisor.size()) //In case the shift makes divadend larger than divisor
-            {
-                result += "01";
-                shifted.pop_back();
-                divadend = Sub(divadend, shifted);
-            }
-            else
-            {
-                break;
-            }
-
-            zeros -= divadend.size();
-
-            //Makes sure it doesn't run on the last loop
-            if (divisor.size() <= divadend.size())
-            {
-                //Adds in "0"s 
-                for (int i = 0; i < zeros-1; i++)
-                {
-                    result += "0";
-                }
-            }
+            beingSubbed.erase(beingSubbed.begin());
         }
-        else //!Might never run
+        
+        //Make sure divisor is greater than being subbed before running
+        if (IsGreaterThan(divisor, beingSubbed))
         {
-            result += "0";
-            divadend.erase(divadend.begin());
+            beingSubbed += divadend[i];
+        }
+
+        //If beingSubbed - divisor is possible, run
+        if (!IsGreaterThan(divisor, beingSubbed))
+        {
+            beingSubbed = Sub(beingSubbed, divisor);
+            result += "1";
+        }
+        else
+        {
+            //Prevent leading zeros
+            if (!IsGreaterThan("1", result))
+            {
+                result += "0";
+            }
         }
     }
+
+    //if 
 
     return result;
     
