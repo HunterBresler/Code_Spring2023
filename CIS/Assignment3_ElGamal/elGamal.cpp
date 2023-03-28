@@ -704,7 +704,7 @@ string ELGAMAL::generateSafePrime(int Size, string &divisor)
     string genPhi = "";
     string minValue = "";
     int k = sqrt(Size) + 2; //Amount of times to run miller test
-    int failCount = 0;
+    int checkCount = 0, failCount = 0;
     bool safe = false;
 
     
@@ -738,12 +738,14 @@ string ELGAMAL::generateSafePrime(int Size, string &divisor)
                 divisor = i; //set divisor to i for 
                 break;
             }
+
+            failCount++;
         }
 
-        failCount++;
+        checkCount++;
     }
 
-    cout << "\nSafePrime checked " << failCount << " possible safe primes.\n";
+    cout << "\nSafePrime checked " << checkCount << " generated primes and " << failCount << " possible safe primes.\n";
 
     return genPrime;
 }

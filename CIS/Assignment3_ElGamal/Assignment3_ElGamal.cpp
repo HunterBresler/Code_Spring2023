@@ -20,24 +20,27 @@ int main(){
     srand(time(NULL));
 
     //Comment out what you aren't testing
-    /*
     //Test Main Class Functions
-    ELGAMAL memberTest;
+    //Least cool
+    //ELGAMAL memberTest;
 
-    memberTest.Drive();
-    memberTest.encrypt();
-    memberTest.decrypt();
+    //memberTest.Drive();
+    //memberTest.encrypt();
+    //memberTest.decrypt();
 
     //Test User Functionality
-    ELGAMAL user("Jeff");
+    //ELGAMAL user("Jeff");
 
-    user.encrypt();
-    user.decrypt();
-    */
+    //user.encrypt();
+    //user.decrypt();
 
     //Test Dev Mode (time test as well)
-    int keySize = 128;
-    string safePrimeCheckCount = "111111";
+    //Most cool
+    int keySize = 64;
+    string safePrimeCheckCount = "1111111";
+    //From testing it appears that the larger this number is, the faster the code runs
+    //Gets slower once all results only generate 1 prime before a safe prime is found
+    //Must be 2 or greater
     ELGAMAL test(keySize, safePrimeCheckCount);
 
     //Calc and print time
