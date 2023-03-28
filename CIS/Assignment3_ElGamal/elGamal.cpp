@@ -25,11 +25,11 @@ ELGAMAL::ELGAMAL()
 
 ELGAMAL::ELGAMAL(string user)
 {
-    char response;
+    char response = 'n';
 
     //Ask if the want to generate keys
     cout << endl << user << " would you like to generate keys (y/n): ";
-    cin >> response;
+    //cin >> response;
 
     if (response == 'y' || response == 'Y')
     {
@@ -558,7 +558,7 @@ string ELGAMAL::generateGenerator(string num)
 {
     
     string phi = Sub(num, "1");
-    string testGenerator = "";
+    string testGenerator = getRandom("10", phi);
     bool foundGenerator = false;
     string test1 = "10";
     string test2 = Div(phi, "10");
@@ -567,13 +567,13 @@ string ELGAMAL::generateGenerator(string num)
     //Prime numbers always have a generator
     while (!foundGenerator)
     {
-
-        testGenerator = getRandom("10", phi);
         
         if (ModExpo(testGenerator, test1, num) != "1" && ModExpo(testGenerator, test2, num) != "1")
         {
             foundGenerator = true;
         }
+
+        testGenerator = getRandom("10", phi);
 
     }
 
@@ -589,17 +589,17 @@ void ELGAMAL::generateKeys()
     int keySize = 0;
     ofstream fout;
 
-    //while (true)
-    //{
+    while (true)
+    {
         cout << "\nEnter a bit size for your private key (16, 32, 64, or 128): ";
         cin >> keySize;
 
-        //if (keySize == 16 || keySize == 32 || keySize == 64 || keySize == 128)
-        //{
-        //    break;
-        //}
-        //cout << "\nInvalid key size. Try again";
-    //}
+        if (keySize == 16 || keySize == 32 || keySize == 64 || keySize == 128)
+        {
+            break;
+        }
+        cout << "\nInvalid key size. Try again";
+    }
 
     //Generate public key and private key
     //Gives progress updates through terminal
@@ -731,12 +731,12 @@ string ELGAMAL::generateSafePrime(int Size)
             genPrime = getRandom(minValue, minValue + "1"); //Generates a prime of Size-1 bits
         }
 
-        //Multiply first prime by 2 and add 1
+        //Multiply first prime by 2 and add 1 by adding 1 to the end
         genPrime += "1";
 
         //Check if the second prime is prime
         //And therefore, a safe prime
-        if (isPrime(genPrime, genPrime.size() + 5))
+        if (isPrime(genPrime, genPrime.size()))
         {
             safe = true;
         }
@@ -752,6 +752,9 @@ string ELGAMAL::generateSafePrime(int Size)
 void ELGAMAL::encrypt()
 {
 
+    //Make sure encrypt has access to plain text and public key
+    getPublicKey_fromFile();
+    getPlainText_fromFile();
     ofstream fout;
 
     //Calculate ELGAMAL Variables gamma and delta
@@ -773,6 +776,10 @@ void ELGAMAL::encrypt()
 void ELGAMAL::decrypt()
 {
 
+    //Make sure decrypt has access to cipher text, private key, and public key
+    getCipherText_fromFile();
+    getPrivateKey_fromFile();
+    getPublicKey_fromFile();
     ofstream fout;
 
     //Calculate exponent
@@ -808,25 +815,16 @@ void ELGAMAL::Drive()
 
     char response;
 
-    //Get public key from file
-    getPublicKey_fromFile();
-
     //Ask for decryption or encription
     cout << "\nWould you like to decrypt or encrypt a message (d/e): ";
     cin >> response;
 
     if (response == 'd' || response == 'D')
     {
-        //Make sure decrypt has access to cipher text and public key
-        getCipherText_fromFile();
-        getPublicKey_fromFile();
         decrypt();
     }
     else if (response == 'e' || response == 'E')
     {
-        //Make sure encrypt has access to plain text and private key
-        getPlainText_fromFile();
-        getPrivateKey_fromFile();
         encrypt();
     }
     else
