@@ -553,75 +553,32 @@ string ELGAMAL::getRandom(string min, string max)
 }
 
 
-//Adds to a list of prime factors taken by reference
-void ELGAMAL::findPrimeFactors(vector<string> &primes, string phi)
-{
-
-    //Add all factors of 2
-    while (Modulus(phi, "10") == "0")
-    {
-        primes.push_back("10");
-        phi = Div(phi, "10");
-    }
-
-
-    //Add all other factors > 2
-    // (int i = 3; i^2 <= phi; i = i+2): add by 2 to skip over already covered evens
-    for (string i = "11"; !IsGreaterThan(Multiply(i, i), phi); i = Add(i, "10"))
-    {   
-        //Add all factors of i
-        while (Modulus(phi, i) == "0")
-        {
-            primes.push_back(i);
-            phi = Div(phi, i);
-        }
-    }
-
-    //Add n if it is > 2
-    //!Not sure why
-    if (IsGreaterThan(phi, "10"))
-    {
-        primes.push_back(phi);
-    }
-}
-
-
+//Input must be a safe prime
 string ELGAMAL::generateGenerator(string num)
 {
-
+    
     string phi = Sub(num, "1");
-    vector<string> primeFactors = {};
-    findPrimeFactors(primeFactors, phi);
     string testGenerator = "";
-    bool isGenerator = false;
+    bool foundGenerator = false;
+    string test1 = "10";
+    string test2 = Div(phi, "10");
 
     //Runs until a generator is found
-    //!May rerun generators
-    while (!isGenerator)
+    //Prime numbers always have a generator
+    while (!foundGenerator)
     {
 
-        isGenerator = true;
-        testGenerator = getRandom("10", prime);
-
-        for (int index = 0; index < primeFactors.size(); index++)
+        testGenerator = getRandom("10", phi);
+        
+        if (ModExpo(testGenerator, test1, num) != "1" && ModExpo(testGenerator, test2, num) != "1")
         {
-            if (ModExpo(testGenerator, Div(phi, primeFactors[index]), num) == "1")
-            {
-                isGenerator = false;
-                break;
-            }
+            foundGenerator = true;
         }
-
-        if (isGenerator)
-        {
-            return testGenerator;
-        } 
 
     }
 
-    //Fail check
-    cout << "\nGenerator Failed to generate";
-    exit(2);
+    return testGenerator;
+
 }
 
 //*ELGAMAL Functions
@@ -632,21 +589,21 @@ void ELGAMAL::generateKeys()
     int keySize = 0;
     ofstream fout;
 
-    while (true)
-    {
+    //while (true)
+    //{
         cout << "\nEnter a bit size for your private key (16, 32, 64, or 128): ";
         cin >> keySize;
 
-        if (keySize == 16 || keySize == 32 || keySize == 64 || keySize == 128)
-        {
-            break;
-        }
-        cout << "\nInvalid key size. Try again";
-    }
+        //if (keySize == 16 || keySize == 32 || keySize == 64 || keySize == 128)
+        //{
+        //    break;
+        //}
+        //cout << "\nInvalid key size. Try again";
+    //}
 
     //Generate public key and private key
     //Gives progress updates through terminal
-    prime = generatePrime(keySize);
+    prime = generateSafePrime(keySize);
     cout << "\nPrime generated: " << prime;
     private_key = getRandom("1", Sub(prime, "10"));
     cout << "\nPrivate key generated: " << private_key;
@@ -751,20 +708,41 @@ bool ELGAMAL::millerTest(string num, string d)
 }
 
 
-string ELGAMAL::generatePrime(int Size)
+string ELGAMAL::generateSafePrime(int Size)
 {
     string genPrime = "1";
     string minValue = "";
+    bool safe = false;
+
 
     //Fill minValue
-    for (int i = 0; i < Size-1; i++)
+    for (int i = 0; i < Size-2; i++)
     {
         minValue += "1";
     }
 
-    while (!isPrime(genPrime, genPrime.size() + 10))
+    //Generate Safe prime
+    while (!safe)
     {
-        genPrime = getRandom(minValue, minValue + "1"); //Generates a prime of Size bits
+
+        //Generate first prime
+        while (!isPrime(genPrime, genPrime.size() + 5))
+        {
+            genPrime = getRandom(minValue, minValue + "1"); //Generates a prime of Size-1 bits
+        }
+
+        //Multiply first prime by 2 and add 1
+        genPrime += "1";
+
+        //Check if the second prime is prime
+        //And therefore, a safe prime
+        if (isPrime(genPrime, genPrime.size() + 5))
+        {
+            safe = true;
+        }
+
+        cout << "\nFail";
+
     }
 
     return genPrime;

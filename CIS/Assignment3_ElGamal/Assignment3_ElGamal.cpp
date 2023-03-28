@@ -17,10 +17,6 @@ int main(){
 
     ELGAMAL hasKey("Has Key");//, sender("Sender");
 
-    string result = hasKey.Div("11110", "11");
-    cout << "\nTEST: " << result;
-
-
     //Sender encrypts and sends message
     //sender.Drive();
 

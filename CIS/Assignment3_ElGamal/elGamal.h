@@ -59,14 +59,13 @@ class ELGAMAL
         string Modulus(string divadend, string divisor);
         string Div(string divadend, string divisor);
         string getRandom(string min, string max);
-        void findPrimeFactors(vector<string> &primes, string phi);
         string generateGenerator(string prime);
 
         //*ELGAMAL Functions
         void generateKeys();
         bool isPrime(string num, int k);
         bool millerTest(string num, string d);
-        string generatePrime(int Size);
+        string generateSafePrime(int Size);
         void encrypt();
         void decrypt();
 
