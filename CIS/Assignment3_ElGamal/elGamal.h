@@ -14,6 +14,7 @@ class ELGAMAL
     private:
 
         //*Public Key
+        string safePrimeDivisor; //For how many possible safe primes to check
         string prime;
         string generator;
         string generator_pow_private_key;
@@ -35,7 +36,7 @@ class ELGAMAL
         //*Constructors
         ELGAMAL();
         ELGAMAL(string user);
-        ELGAMAL(int test); //For testing
+        ELGAMAL(int test, string safePrimeCheckCount); //For testing
 
         //* Getter/Setter Functions
         void getPublicKey_fromFile();
@@ -66,7 +67,7 @@ class ELGAMAL
         void generateKeys(int keySize);
         bool isPrime(string num, int k);
         bool millerTest(string num, string d);
-        string generateSafePrime(int Size);
+        string generateSafePrime(int Size, string &divisor);
         void encrypt();
         void decrypt();
 

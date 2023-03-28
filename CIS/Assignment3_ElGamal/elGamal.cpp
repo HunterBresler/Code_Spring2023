@@ -4,13 +4,16 @@
 #include <fstream>
 #include <cstdlib>
 #include <vector>
+#include <cmath>
+#include <chrono>
 #include "elGamal.h"
 
 
 //*Constructors
 ELGAMAL::ELGAMAL()
 {
-
+    //Initialize safe prime for basic use with sophie germain primes
+    safePrimeDivisor = "10";
 }
 
 
@@ -18,6 +21,10 @@ ELGAMAL::ELGAMAL(string user)
 {
     char response = 'n';
     int keySize;
+
+    //Initialize safe prime for basic use with sophie germain primes
+    safePrimeDivisor = "10";
+
 
     //Ask if the want to generate keys
     cout << endl << user << " would you like to generate keys (y/n): ";
@@ -42,8 +49,9 @@ ELGAMAL::ELGAMAL(string user)
     }
 }
 
-ELGAMAL::ELGAMAL(int test)
+ELGAMAL::ELGAMAL(int test, string safePrimeCheckCount)
 {
+    safePrimeDivisor = safePrimeCheckCount;
     generateKeys(test);
     encrypt();
     decrypt();
@@ -106,16 +114,6 @@ void ELGAMAL::getPlainText_fromFile()
     line = line.substr(line.find(": ") + 2); // increment to cut out the ": "
     plain_text = line;
 
-
-    //TODO later
-    //read the whole plain text
-    //while (fin)
-    //{
-        //Get plain text from file
-    //    getline(fin, line);
-    //    plain_text += line;
-    //}
-
     fin.close();
 }
 
@@ -136,15 +134,6 @@ void ELGAMAL::getCipherText_fromFile()
     getline(fin, line);
     line = line.substr(line.find(": ") + 2); // increment to cut out the ": "
     delta = line;
-
-    //TODO later
-    //read the whole cipher text
-    //while (fin)
-    //{
-        //Get cipher text from file
-    //    getline(fin, line);
-    //    cipher_text += line;
-    //}
 
     fin.close();
 }
@@ -543,7 +532,7 @@ string ELGAMAL::getRandom(string min, string max)
     //Fill in random sized string with random binary values
     for (int i = 0; i < max.size(); i++)
     {
-        randomNum += ((rand() % 2 == 1) ? '1': '0');
+        randomNum += (((15 + 31*rand()) % 2 == 1) ? '1': '0');
     }
 
 
@@ -570,22 +559,24 @@ string ELGAMAL::generateGenerator(string num)
 {
     
     string phi = Sub(num, "1");
-    string testGenerator = getRandom("10", phi);
+    string testGenerator;
     bool foundGenerator = false;
-    string test1 = "10";
-    string test2 = Div(phi, "10");
+    string test1 = safePrimeDivisor;
+    string test2 = Div(phi, safePrimeDivisor);
 
     //Runs until a generator is found
     //Prime numbers always have a generator
     while (!foundGenerator)
     {
         
+        //Get a random generator candidate
+        testGenerator = getRandom("10", phi);
+
+        //Test using safe primes
         if (ModExpo(testGenerator, test1, num) != "1" && ModExpo(testGenerator, test2, num) != "1")
         {
             foundGenerator = true;
         }
-
-        testGenerator = getRandom("10", phi);
 
     }
 
@@ -603,7 +594,7 @@ void ELGAMAL::generateKeys(int keySize)
 
     //Generate public key and private key
     //Gives progress updates through terminal
-    prime = generateSafePrime(keySize);
+    prime = generateSafePrime(keySize, safePrimeDivisor);
     cout << "\nPrime generated: " << prime;
     private_key = getRandom("1", Sub(prime, "10"));
     cout << "\nPrivate key generated: " << private_key;
@@ -707,16 +698,18 @@ bool ELGAMAL::millerTest(string num, string d)
 }
 
 
-string ELGAMAL::generateSafePrime(int Size)
+string ELGAMAL::generateSafePrime(int Size, string &divisor)
 {
     string genPrime = "1";
+    string genPhi = "";
     string minValue = "";
+    int k = sqrt(Size) + 2; //Amount of times to run miller test
     int failCount = 0;
     bool safe = false;
 
-
+    
     //Fill minValue
-    for (int i = 0; i < Size-2; i++)
+    for (int i = 0; i < Size-1; i++)
     {
         minValue += "1";
     }
@@ -724,27 +717,33 @@ string ELGAMAL::generateSafePrime(int Size)
     //Generate Safe prime
     while (!safe)
     {
-
+        auto begin = chrono::high_resolution_clock::now();
         //Generate first prime
-        while (!isPrime(genPrime, genPrime.size() + 5))
+        //do while to make sure it generates a new prime
+        do
         {
-            genPrime = getRandom(minValue, minValue + "1"); //Generates a prime of Size-1 bits
-        }
+            genPrime = getRandom(minValue, minValue + "1"); //Generates a prime of Size bits
+        } 
+        while (!isPrime(genPrime, k));
 
-        //Multiply first prime by 2 and add 1 by adding 1 to the end
-        genPrime += "1";
+        genPhi = Sub(genPrime, "1");
 
-        //Check if the second prime is prime
-        //And therefore, a safe prime
-        if (isPrime(genPrime, genPrime.size()))
+        //Check if the prime is a safe prime for any number n, 2 <= n <= divisor
+        for (string i = "10"; !IsGreaterThan(i, divisor); i = Add(i, "1"))
         {
-            safe = true;
+            if (isPrime(Div(genPhi, i), k))
+            {
+                //If true, break in order to not check other possible safe primes
+                safe = true;
+                divisor = i; //set divisor to i for 
+                break;
+            }
         }
 
         failCount++;
-        cout << "\nSafePrime Fail #" << failCount;
-
     }
+
+    cout << "\nSafePrime checked " << failCount << " possible safe primes.\n";
 
     return genPrime;
 }

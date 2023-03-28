@@ -36,14 +36,15 @@ int main(){
     */
 
     //Test Dev Mode (time test as well)
-    int keySize = 44;
-    ELGAMAL test(keySize);
+    int keySize = 256;
+    string safePrimeCheckCount = "111111";
+    ELGAMAL test(keySize, safePrimeCheckCount);
 
     //Calc and print time
     auto end = chrono::high_resolution_clock::now();
     auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
 
-    printf("\n\nTime measured: %.3f seconds.\n", elapsed.count() * 1e-9);
+    printf("\n\nTime measured: %.3f seconds.\n\n", elapsed.count() * 1e-9);
 
     return 0;
 }
