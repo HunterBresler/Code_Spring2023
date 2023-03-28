@@ -503,10 +503,14 @@ string ELGAMAL::Div(string divadend, string divisor)
 
             zeros -= divadend.size();
 
-            //Adds in "0"s 
-            for (int i = 0; i < zeros-1; i++)
+            //Makes sure it doesn't run on the last loop
+            if (divisor.size() <= divadend.size())
             {
-                result += "0";
+                //Adds in "0"s 
+                for (int i = 0; i < zeros-1; i++)
+                {
+                    result += "0";
+                }
             }
         }
         else //!Might never run
