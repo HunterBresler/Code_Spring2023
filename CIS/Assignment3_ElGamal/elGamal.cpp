@@ -703,7 +703,7 @@ string ELGAMAL::generateSafePrime(int Size, string &divisor)
     string genPrime = "1";
     string genPhi = "";
     string minValue = "";
-    int k = sqrt(Size) + 2; //Amount of times to run miller test
+    int k = ceil(sqrt(Size)); //Amount of times to run miller test
     int checkCount = 0, failCount = 0;
     bool safe = false;
 
