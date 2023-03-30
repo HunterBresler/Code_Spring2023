@@ -1,3 +1,9 @@
+/*
+    Author: Hunter Bresler
+    Date: 3/29/2023
+    Assignment4: DateYear child class implementation
+*/
+
 #include <iostream>
 #include "Lecture14_Code.cpp"
 
