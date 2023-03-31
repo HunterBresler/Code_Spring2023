@@ -1,5 +1,4 @@
 //*Header file for ELGAMAL class
-#include <vector>
 #ifndef ELGAMAL_H
 #define ELGAMAL_H
 
