@@ -4,13 +4,14 @@
 using namespace std;
 
 
-//Single linked list data structure
-struct sLinkedList
+//Double linked list data structure
+struct dLinkedList
 {
     int data;
-    sLinkedList* next;
+    dLinkedList* right;
+    dLinkedList* left;
 };
-typedef sLinkedList node;
+typedef dLinkedList node;
 
 
 //*Linked list functions
@@ -44,7 +45,7 @@ int main(){
     //Insert a new node at the nth position
     insertAtMid(2, start);
     output(start);
-    
+
     return 0;
 
 }
@@ -61,8 +62,8 @@ node* getNode()
     cout << "\nEnter data of type int: ";
     cin >> newNode->data;
 
-    //Enter next value
-    newNode->next = NULL;
+    //Enter left/right values
+    newNode->left = newNode->right = NULL;
 
     //Return the pointer to the new node
     return newNode;
@@ -86,9 +87,9 @@ int getLen(node* start)
     }
 
     //Increment len for each additional member of the linked list
-    while (temp->next != NULL)
+    while (temp->right != NULL)
     {
-        temp = temp->next;
+        temp = temp->right;
         len++;
     }
 
@@ -100,6 +101,7 @@ void createList(int n, node* &start)
 {
     //Declare node pointers
     node* newNode;
+    node* prev;
     node* temp;
     int i = 0; //To iterate through the loop
 
@@ -111,17 +113,23 @@ void createList(int n, node* &start)
     }
 
     //Set temp to start
-    temp = start;
+    temp = prev = start;
 
     //Loop to create loop
     for (; i < n; i++)
     {
         //Create new node and point temp to it
         newNode = getNode();
-        temp->next = newNode;
+        temp->right = newNode;
 
         //Set temp to the new node
-        temp = temp->next;
+        temp = temp->right;
+
+        //Set temp->left to point at the previous node
+        temp->left = prev;
+
+        //Set prev equal to temp
+        prev = temp;
     }
 }
 
@@ -152,11 +160,12 @@ void deleteAtMid(int position, node *start)
         for (int i = 1; i < position; i++) //1 to represent the first element
         {
             prev = temp;
-            temp = temp->next;
+            temp = temp->right;
         }
 
         //Delete the node at the position
-        prev->next = temp->next;
+        prev->right = temp->right;
+        temp->right->left = prev;
         free(temp);
 
         cout << "\nNode deleted.\n";
@@ -186,7 +195,7 @@ void insertAtMid(int position, node* start)
     int listLen = getLen(start);
 
     //Error check for empty list
-    if (listLen > 1 && position < listLen) 
+    if (listLen > 1 && position < listLen)
     {
         //Set temp and prev to start
         temp = prev = start;
@@ -195,12 +204,16 @@ void insertAtMid(int position, node* start)
         for (int i = 1; i < position; i++) //1 to represent the first element
         {
             prev = temp;
-            temp = temp->next;
+            temp = temp->right;
         }
 
         //Insert the new node at the position
-        newNode->next = temp;
-        prev->next = newNode;
+        newNode->right = temp;
+        newNode->left = prev;
+
+        //Point temp and prev to the new node
+        temp->left = newNode;
+        prev->right = newNode;
 
         cout << "\nNode inserted.\n";
     }
@@ -228,9 +241,9 @@ void output(node* start)
     }
 
     //Loop through the list and display the data element of each node
-    while (temp->next != NULL)
+    while (temp->right != NULL)
     {
-        temp = temp->next;
+        temp = temp->right;
         cout << ", " << temp->data;
     }
 }
