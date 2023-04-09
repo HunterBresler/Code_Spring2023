@@ -500,3 +500,8 @@ void binary::pop_back()
 {
     number.pop_back();
 }
+
+binary binary::substr(const int& index1, const int& index2)
+{
+    return number.substr(index1, index2);
+}
