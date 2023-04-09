@@ -1,8 +1,6 @@
 //*binary Implementation
 #include <iostream>
 #include <string>
-#include <fstream>
-#include <cstdlib>
 #include "binary.h"
 
 //*Constructors
@@ -447,7 +445,7 @@ binary Xor(const binary& num1, const binary& num2)
 
 binary getRandom(const binary& min, const binary& max)
 {
-    
+
     binary randomNum("");
 
     //Fill in random sized string with random binary values
