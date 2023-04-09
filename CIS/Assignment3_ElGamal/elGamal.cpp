@@ -516,8 +516,6 @@ string ELGAMAL::Div(string divadend, string divisor)
         }
     }
 
-    //if 
-
     return result;
     
 }
