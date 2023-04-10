@@ -6,11 +6,11 @@
 using namespace std;
 
 
-//*MAIN: tests Pairs class
+//*MAIN: tests rationals class
 int main(){
 
     //Test class
-    Pairs X(2, 3), Y(2);
+    rationals X(2, 3), Y(2);
 
     //Test >> << operators
     cout << "\nEnter an oredered pair (x,y) in the form (x y): ";

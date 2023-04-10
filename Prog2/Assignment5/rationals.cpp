@@ -7,67 +7,67 @@ using namespace std;
 
 
 //*Constructors
-Pairs::Pairs()
+rationals::rationals()
 {
-    f = 0;
-    s = 0;
+    numerator = 0;
+    denominator = 0;
 }
 
 
-Pairs::Pairs(int first)
+rationals::rationals(int first)
 {
-    f = first;
-    s = 0;
+    numerator = first;
+    denominator = 0;
 }
 
 
-Pairs::Pairs(int first, int second)
+rationals::rationals(int first, int second)
 {
-    f = first;
-    s = second;
+    numerator = first;
+    denominator = second;
 }
 
 
 
 //*Friend Functions
-Pairs operator +(const Pairs &first, const Pairs &second)
+rationals operator +(const rationals &first, const rationals &second)
 {
-    Pairs result(first.f + second.f, first.s + second.s);
+    rationals result(first.numerator + second.numerator, first.denominator + second.denominator);
     return result;
 }
 
 
-Pairs operator -(const Pairs &first, const Pairs &second)
+rationals operator -(const rationals &first, const rationals &second)
 {
-    Pairs result(first.f - second.f, first.s - second.s);
+    rationals result(first.numerator - second.numerator, first.denominator - second.denominator);
     return result;
 }
 
 
-Pairs operator -(const Pairs &negate)
+rationals operator -(const rationals &negate)
 {
-    Pairs result(-negate.f, -negate.s);
+    rationals result(-negate.numerator, -negate.denominator);
     return result;
 }
 
 
-Pairs operator *(const Pairs &pair, int scalar)
+rationals operator *(const rationals &pair, int scalar)
 {
-    Pairs result(pair.f * scalar, pair.s * scalar);
+    rationals result(pair.numerator * scalar, pair.denominator * scalar);
     return result;
 }
 
 
-istream& operator >>(istream &ins, Pairs &pair)
+istream& operator >>(istream &ins, rationals &pair)
 {
-    ins >> pair.f >> pair.s;
+    ins >> pair.numerator >> pair.denominator;
     return ins;
 }
 
 
-ostream& operator <<(ostream &outs, const Pairs &pair)
+ostream& operator <<(ostream &outs, const rationals &pair)
 {
-    outs << "(" << pair.f << "," << pair.s << ")";
+    outs << "(" << pair.numerator << "," << pair.denominator << ")";
     return outs;
 }
 
