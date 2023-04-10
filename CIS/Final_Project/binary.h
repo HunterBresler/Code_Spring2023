@@ -8,7 +8,7 @@ using namespace std;
 class binary
 {
 
-    private:
+    protected:
 
         string number;
 
