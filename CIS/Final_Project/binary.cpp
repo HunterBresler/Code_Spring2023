@@ -469,6 +469,41 @@ binary getRandom(const binary& min, const binary& max)
     return randomNum;
 }
 
+int binary::binary_to_decimal(const binary& num)
+{
+    //read binary right to left and add 2^i to result if the read digit is '1'
+    int result = 0;
+    for (int i = 0; i < binary.size(); i++)
+    {
+        //Math to read from right to left
+        if (binary[binary.size() - (i+1)] == '1')
+        {
+            result += pow(2, i);
+        }
+    }
+    
+    return result;
+}
+
+binary binary::decimal_to_binary(int decimal)
+{
+    //Get the remainder and add it as the right most digit of binary
+    string binary = "";
+    while (decimal != 0)
+    {
+        binary = (decimal % 2 == 0 ? "0":"1") + binary; //Sick new operator. Ternary operator epic
+        decimal /= 2;
+    }
+
+    //Make sure binary is 4 bits in length
+    while (binary.size() < 4)
+    {
+        binary = "0" + binary;
+    }
+    
+    return binary;
+}
+
 
 //*String overload functions
 int binary::size() const

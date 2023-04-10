@@ -1,1 +1,0 @@
- sum = sum.PadRight(3);
