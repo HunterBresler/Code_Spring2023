@@ -12,13 +12,13 @@ class rationals
 
         //*Constructors
         rationals();
-        rationals(int first);
-        rationals(int first, int second);
+        rationals(int numerator);
+        rationals(int numerator, int denominator);
 
         //*Friend Functions
-        friend rationals operator +(const rationals &first, const rationals &second);
+        friend rationals operator +(const rationals &numerator, const rationals &denominator);
         //add rationals according to the rule (a, b) + (c, d) = (a + c, b + d)
-        friend rationals operator -(const rationals &first, const rationals &second);
+        friend rationals operator -(const rationals &numerator, const rationals &denominator);
         //subtract rationals according to the rule (a, b) - (c, d) = (a - c, b - d)
         friend rationals operator -(const rationals &negate);
         //negates rationals according to the rule a = -a

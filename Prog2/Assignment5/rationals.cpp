@@ -10,36 +10,37 @@ using namespace std;
 rationals::rationals()
 {
     numerator = 0;
-    denominator = 0;
+    denominator = 1;
 }
 
 
-rationals::rationals(int first)
+rationals::rationals(int numerator)
 {
-    numerator = first;
-    denominator = 0;
+    numerator = numerator;
+    denominator = 1;
 }
 
 
-rationals::rationals(int first, int second)
+rationals::rationals(int numerator, int denominator)
 {
-    numerator = first;
-    denominator = second;
+    numerator = numerator;
+    denominator = denominator;
 }
 
 
 
 //*Friend Functions
-rationals operator +(const rationals &first, const rationals &second)
+rationals operator +(const rationals &numerator, const rationals &denominator)
 {
-    rationals result(first.numerator + second.numerator, first.denominator + second.denominator);
+    rationals result;
+    result.numerator = 
     return result;
 }
 
 
-rationals operator -(const rationals &first, const rationals &second)
+rationals operator -(const rationals &numerator, const rationals &denominator)
 {
-    rationals result(first.numerator - second.numerator, first.denominator - second.denominator);
+    rationals result(numerator.numerator - denominator.numerator, numerator.denominator - denominator.denominator);
     return result;
 }
 
