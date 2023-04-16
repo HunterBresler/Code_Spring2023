@@ -524,7 +524,7 @@ binary getRandom(const binary& min, const binary& max)
 
 //*Primes
 //Returns true if prime
-bool isPrime(binary num)
+bool isPrime(const binary& num)
 {
 
     if (simplePrimeCheck(num) == false) //aka if num is composite
@@ -567,7 +567,7 @@ bool isPrime(binary num)
 }
 
 //Returns true if prime
-bool simplePrimeCheck(binary num)
+bool simplePrimeCheck(const binary& num)
 {
     //Base cases
     if (num == "1" || num == "0")
@@ -595,7 +595,7 @@ bool simplePrimeCheck(binary num)
 }
 
 //Returns true if prime
-bool millerTest(binary num, binary d)
+bool millerTest(const binary& num, binary d)
 {
 
     //Declare variables

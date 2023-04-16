@@ -114,9 +114,9 @@ const binary first_primes[] = { "10", "11", "101", "111", "1011", "1101",
                                 "100110111", "100111001", "100111101", "101001011", 
                                 "101010001", "101011011", "101011101" };
 int passed = 0;
-bool isPrime(binary num);
-bool simplePrimeCheck(binary num);
-bool millerTest(binary num, binary d);
+bool isPrime(const binary& num);
+bool simplePrimeCheck(const binary& num);
+bool millerTest(const binary& num, binary d);
 binary generatePrime(int Size);
 
 #endif

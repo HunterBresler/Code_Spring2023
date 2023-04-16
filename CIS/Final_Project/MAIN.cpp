@@ -16,7 +16,7 @@ int main()
     srand(time(NULL));
 
     binary prime;
-    prime = generatePrime(256);
+    prime = generatePrime(64);
     cout << "\nPrime: " << prime;
 
 
