@@ -629,7 +629,7 @@ bool millerTest(const binary& num, binary d)
 }
 
 
-binary generatePrime(int Size)
+binary generatePrime(const int& Size)
 {
     binary genPrime, minValue(Size), maxValue(Size+1);
     int checkCount = 0;

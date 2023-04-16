@@ -117,6 +117,6 @@ int passed = 0;
 bool isPrime(const binary& num);
 bool simplePrimeCheck(const binary& num);
 bool millerTest(const binary& num, binary d);
-binary generatePrime(int Size);
+binary generatePrime(const int& Size);
 
 #endif
