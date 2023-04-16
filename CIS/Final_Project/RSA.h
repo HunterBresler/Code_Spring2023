@@ -38,7 +38,10 @@ class RSA: public binary
 
         //* Getter/"Setter" Functions
         //Gets public key from file
-        binary get_public_key();
+        void getPublicKey_fromFile();
+        void getPrivateKey_fromFile();
+        void getPlainText_fromFile();
+        void getCipherText_fromFile();
         //Generates size bit primes p and q
         void generatePrimes(const int& size);
         //Precondition: p and q must already have been generated
