@@ -542,27 +542,25 @@ bool isPrime(binary num)
     
 
     int k = 4; //Amount of times to run miller test
-    auto begin = chrono::high_resolution_clock::now();
+    //auto begin = chrono::high_resolution_clock::now();
     //Run the miller test k times
     for (int i = 0; i < k; i++)
     {
         //If num is composite
         if (millerTest(num, d) == false)
         {
-            auto end = chrono::high_resolution_clock::now();
-            auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
+            //auto end = chrono::high_resolution_clock::now();
+            //auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
 
-            printf("\n\nTime measured: %.3f seconds.\n\n", elapsed.count() * 1e-9);
-            printf("Ran %d times", i);
+            //printf("\n\nRabin time measured: %.3f seconds.\n\n", elapsed.count() * 1e-9);
             return false;
         }
     }
 
-    auto end = chrono::high_resolution_clock::now();
-    auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
+    //auto end = chrono::high_resolution_clock::now();
+    //auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
     
-    printf("\n\nTime measured: %.3f seconds.\n\n", elapsed.count() * 1e-9);
-    printf("Ran %d times", k);
+    //printf("\n\nRabin time measured: %.3f seconds.\n\n", elapsed.count() * 1e-9);
 
     return true;
 
