@@ -18,6 +18,8 @@ class binary
         binary();
         binary(string num);
         binary(char num);
+        binary(const char num[]);
+        binary(int size);
 
         //* Getter/Setter Functions
         string get_Number();
@@ -70,14 +72,7 @@ class binary
         //Adds '0' to the start of a binary number padCount times
         binary PadLeft(int padCount) const;
         //Removes leading 0s of a binary number
-        void removeLeadingZeros();
-        //Calculates base^exponent % modulo quickly
-        friend binary ModExpo(const binary& base, const binary& exponent, const binary& modulo);
-        //Precondition: num1 and num2 must be the same length
-        //Calculates Xor of num1 and num2
-        friend binary Xor(const binary& num1, const binary& num2);
-        //Calculates a random number between min and max inclusive
-        friend binary getRandom(const binary& min, const binary& max); 
+        void removeLeadingZeros(); 
 
         //*String overload functions
         //Allows string functions on Binary objects
@@ -90,5 +85,38 @@ class binary
         binary substr(const int& index1, const int& index2);
 
 };
+
+//*Binary Calc Functions
+// Calculates base^exponent % modulo quickly
+binary ModExpo(const binary &base, const binary &exponent, const binary &modulo);
+// Precondition: num1 and num2 must be the same length
+// Calculates Xor of num1 and num2
+binary Xor(const binary &num1, const binary &num2);
+// Calculates a random number between min and max inclusive
+binary getRandom(const binary &min, const binary &max);
+
+//*Primes
+const binary first_primes[] = { "10", "11", "101", "111", "1011", "1101",
+                                "10001", "10011", "10111", "11101",
+                                "11111", "100101", "101001", "101011", "101111",
+                                "110101", "111011", "111101", "1000011",
+                                "1000111", "1001001", "1001111", "1010011",
+                                "1011001", "1100001", "1100101", "1100111",
+                                "1101011", "1101101", "1110001", "1111111",
+                                "10000011", "10001001", "10001011", "10010101",
+                                "10010111", "10011101", "10100011", "10100111",
+                                "10101101", "10110011", "10110101", "10111111", 
+                                "11000001", "11000101", "11000111", "11010011", 
+                                "11011111", "11100011", "11100101", "11101001", 
+                                "11101111", "11110001", "11111011", "100000001",
+                                "100000111", "100001101", "100001111", "100010101", 
+                                "100011001", "100011011", "100100101", "100110011", 
+                                "100110111", "100111001", "100111101", "101001011", 
+                                "101010001", "101011011", "101011101" };
+int passed = 0;
+bool isPrime(binary num);
+bool simplePrimeCheck(binary num);
+bool millerTest(binary num, binary d);
+binary generatePrime(int Size);
 
 #endif

@@ -1,6 +1,7 @@
 //*binary Implementation
 #include <iostream>
 #include <string>
+#include <cmath>
 #include "binary.h"
 
 //*Constructors
@@ -17,6 +18,17 @@ binary::binary(string num)
 binary::binary(char num)
 {
     number = num;
+}
+
+binary::binary(const char num[])
+{
+    number = num;
+}
+
+binary::binary(int size)
+{
+    number = "1";
+    number.append(size-1, '0');
 }
 
 //* Getter/Setter Functions
@@ -143,6 +155,8 @@ binary operator/(const binary& divadend, const binary& divisor)
     for (int i = 0; i < divadend.size(); i++)
     {
         
+        beingSubbed.removeLeadingZeros();
+
         //Make sure divisor is greater than being subbed before running
         if (divisor > beingSubbed)
         {
@@ -153,7 +167,6 @@ binary operator/(const binary& divadend, const binary& divisor)
         if (beingSubbed >= divisor)
         {
             beingSubbed -= divisor;
-            beingSubbed.removeLeadingZeros();
             result.push_back('1');
         }
         else
@@ -368,6 +381,45 @@ void binary::removeLeadingZeros()
     }
 }
 
+
+//*String overload functions
+int binary::size() const
+{
+    return number.size();
+}
+
+void binary::erase(const string::iterator& it)
+{
+    number.erase(it);
+}
+
+string::iterator binary::begin()
+{
+    return number.begin();
+}
+
+void binary::push_back(const char& c)
+{
+    number.push_back(c);
+}
+
+void binary::insert(const string::iterator it, const char&  c)
+{
+    number.insert(it, c);
+}
+
+void binary::pop_back()
+{
+    number.pop_back();
+}
+
+binary binary::substr(const int& index1, const int& index2)
+{
+    return number.substr(index1, index2);
+}
+
+
+//*Binary Calc Functions
 binary ModExpo(const binary& base, const binary& exponent, const binary& modulo)
 {
 
@@ -469,14 +521,143 @@ binary getRandom(const binary& min, const binary& max)
     return randomNum;
 }
 
-int binary::binary_to_decimal(const binary& num)
+
+//*Primes
+//Returns true if prime
+bool isPrime(binary num)
+{
+
+    if (simplePrimeCheck(num) == false) //aka if num is composite
+    {
+        return false;
+    }
+
+    //Run Miller if num passes the simple prime check
+    //find an odd d where d*2^r = n-1
+    binary d = num - "1";
+    while (d % "10" == "0")
+    {
+        d /= "10";
+    }
+    
+
+    int k = 4; //Amount of times to run miller test
+    auto begin = chrono::high_resolution_clock::now();
+    //Run the miller test k times
+    for (int i = 0; i < k; i++)
+    {
+        //If num is composite
+        if (millerTest(num, d) == false)
+        {
+            auto end = chrono::high_resolution_clock::now();
+            auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
+
+            printf("\n\nTime measured: %.3f seconds.\n\n", elapsed.count() * 1e-9);
+            printf("Ran %d times", i);
+            return false;
+        }
+    }
+
+    auto end = chrono::high_resolution_clock::now();
+    auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
+    
+    printf("\n\nTime measured: %.3f seconds.\n\n", elapsed.count() * 1e-9);
+    printf("Ran %d times", k);
+
+    return true;
+
+}
+
+//Returns true if prime
+bool simplePrimeCheck(binary num)
+{
+    //Base cases
+    if (num == "1" || num == "0")
+    {
+        return false;
+    }
+    else if (num == "10" || num == "11")
+    {
+        return true;
+    }
+    
+    //Check first 70 primes
+    for (binary i : first_primes)
+    {
+        if (num % i == "0")
+        {
+            return false;
+        }
+    }
+
+    //Passes simple prime check
+    passed++;
+    return true;
+    
+}
+
+//Returns true if prime
+bool millerTest(binary num, binary d)
+{
+
+    //Declare variables
+    binary numMinus1 = num - "1";
+    binary a = getRandom("10", num - "10");
+    binary x = ModExpo(a, d, num);
+
+    //Prime checking
+    if (x == "1" || x == numMinus1)
+    {
+        return true;
+    }
+
+
+    while (d != numMinus1)
+    {
+        x = ModExpo(x, "10", num);
+        d *= "10";
+ 
+        if (x == "1")
+        {
+            return false;
+        }
+        else if (x == numMinus1)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+binary generatePrime(int Size)
+{
+    binary genPrime, minValue(Size), maxValue(Size+1);
+    int checkCount = 0;
+
+    while (!isPrime(genPrime))
+    {
+
+        genPrime = getRandom(minValue, maxValue); // Generates a prime of Size bits
+        checkCount++;
+    }
+
+    cout << "\nCheck count: " << checkCount;
+    cout << "\nPassed count: " << passed;
+
+    return genPrime;
+}
+
+//!Move to 3DES
+int binary_to_decimal(const binary& num)
 {
     //read binary right to left and add 2^i to result if the read digit is '1'
     int result = 0;
-    for (int i = 0; i < binary.size(); i++)
+    for (int i = 0; i < num.size(); i++)
     {
         //Math to read from right to left
-        if (binary[binary.size() - (i+1)] == '1')
+        if (num[num.size() - (i+1)] == '1')
         {
             result += pow(2, i);
         }
@@ -485,58 +666,22 @@ int binary::binary_to_decimal(const binary& num)
     return result;
 }
 
-binary binary::decimal_to_binary(int decimal)
+binary decimal_to_binary(int decimal)
 {
     //Get the remainder and add it as the right most digit of binary
-    string binary = "";
+    string bNum = "";
     while (decimal != 0)
     {
-        binary = (decimal % 2 == 0 ? "0":"1") + binary; //Sick new operator. Ternary operator epic
+        bNum = (decimal % 2 == 0 ? "0":"1") + bNum; //Sick new operator. Ternary operator epic
         decimal /= 2;
     }
 
     //Make sure binary is 4 bits in length
-    while (binary.size() < 4)
+    while (bNum.size() < 4)
     {
-        binary = "0" + binary;
+        bNum = "0" + bNum;
     }
-    
-    return binary;
-}
 
-
-//*String overload functions
-int binary::size() const
-{
-    return number.size();
-}
-
-void binary::erase(const string::iterator& it)
-{
-    number.erase(it);
-}
-
-string::iterator binary::begin()
-{
-    return number.begin();
-}
-
-void binary::push_back(const char& c)
-{
-    number.push_back(c);
-}
-
-void binary::insert(const string::iterator it, const char&  c)
-{
-    number.insert(it, c);
-}
-
-void binary::pop_back()
-{
-    number.pop_back();
-}
-
-binary binary::substr(const int& index1, const int& index2)
-{
-    return number.substr(index1, index2);
+    binary num(bNum);
+    return num;
 }
