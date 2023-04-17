@@ -8,7 +8,7 @@ namespace RSA_HB
     //*Constructors
     RSA::RSA()
     {
-
+        
     }
 
     RSA::RSA(int size)

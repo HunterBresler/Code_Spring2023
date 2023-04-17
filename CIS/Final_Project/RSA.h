@@ -47,10 +47,10 @@ namespace RSA_HB
             void get_Public_Key_fromFile();
             void get_Private_Key_fromFile();
             // Precondition: n must already have been generated
-            // fills plain_text from file in n-1 size blocks
+            // fills plain_text from file 
             void get_Plain_Text_fromFile();
             // Precondition: n must already have been obtained through a public key
-            // fills cipher_text from file in n-1 size blocks
+            // fills cipher_text from file
             void get_Cipher_Text_fromFile();
             // Generates size bit primes p and q
             void generate_RSA_Primes(const int &size);
