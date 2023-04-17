@@ -11,6 +11,8 @@ using namespace binary_HB;
 
 namespace RSA_HB
 {
+    //const int BLOCK_SIZE = 4194304;
+
     // Performs RSA using binary data type
     // Plaintext and ciphertext are "sent" through .txt files
     class RSA
@@ -30,9 +32,10 @@ namespace RSA_HB
             binary d;
 
             //*Texts
-            vector<binary> plain_text;
-            vector<binary> cipher_text;
-            int BLOCK_SIZE;
+            //vector<binary> plain_text;
+            //vector<binary> cipher_text;
+            binary plain_text;
+            binary cipher_text;
 
         public:
             //*Constructors
@@ -57,8 +60,11 @@ namespace RSA_HB
             void generate_Keys();
 
             //*Encryption/Decription
-            void encrypt();
-            void decrypt();
+            void encryption();
+            void decryption();
+            void encrypt_fromFile();
+            void encrypt_fromGeneration(const int& size);
+            void decrypt_fromFile();
 
             //*Helper functions
             void generate_e();

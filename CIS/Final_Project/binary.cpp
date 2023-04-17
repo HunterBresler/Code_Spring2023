@@ -619,16 +619,16 @@ namespace binary_HB
     binary generatePrime(const int &Size)
     {
         binary genPrime, minValue(Size), maxValue(Size + 1);
-        int checkCount = 0;
+        //int checkCount = 0;
 
         while (!isPrime(genPrime))
         {
 
             genPrime = getRandom(minValue, maxValue); // Generates a prime of Size bits
-            checkCount++;
+            //checkCount++;
         }
 
-        cout << "\nCheck count: " << checkCount;
+        //cout << "\nCheck count: " << checkCount;
 
         return genPrime;
     }

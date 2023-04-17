@@ -19,10 +19,10 @@ int main()
     //Set seed for random numbers
     srand(time(NULL));
 
-    binary prime;
-    prime = generatePrime(64);
-    cout << "\nPrime: " << prime;
+    RSA Sender(64), Receiver;
 
+    //Sender.encrypt_fromFile();
+    Receiver.decrypt_fromFile();
 
     //Calc and print time
     auto end = chrono::high_resolution_clock::now();

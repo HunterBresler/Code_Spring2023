@@ -13,8 +13,7 @@ namespace RSA_HB
 
     RSA::RSA(int size)
     {
-        generate_RSA_Primes(size);
-        generate_Keys();
+        encrypt_fromGeneration(size);
     }
 
     //* Getter/"Setter" Functions
@@ -23,7 +22,7 @@ namespace RSA_HB
         ifstream fin;
 
         string line;
-        fin.open("RSA_Public_Key.txt");
+        fin.open("unsecure_channel/RSA_Public_Key.txt");
 
         // Get n from file
         getline(fin, line);
@@ -43,7 +42,7 @@ namespace RSA_HB
         ifstream fin;
 
         string line;
-        fin.open("RSA_Private_Key.txt");
+        fin.open("local_storage/RSA_Private_Key.txt");
 
         // Get private key from file
         getline(fin, line);
@@ -59,9 +58,9 @@ namespace RSA_HB
         getline(fin, line);
         line = line.substr(line.find(": ") + 2); // increment to cut out the ": "
         q = line;
-
+        
         // Calculate phi
-        phi = (n - '1') * (q - '1');
+        phi = (p - '1') * (q - '1');
 
         fin.close();
     }
@@ -70,9 +69,16 @@ namespace RSA_HB
     {
         ifstream fin;
 
-        binary block("");
-        fin.open("RSA_Plain_Text.txt");
+        //binary block("");
+        string line;
+        fin.open("local_storage/RSA_Plain_Text.txt");
 
+        // Get plain text from file
+        getline(fin, line);
+        line = line.substr(line.find(": ") + 2); // increment to cut out the ": "
+        plain_text = line;
+
+        /*
         while (fin)
         {
             for (int i = 0; i < BLOCK_SIZE; i++)
@@ -92,6 +98,7 @@ namespace RSA_HB
             plain_text.push_back(block);
             block = "";
         }
+        */
 
         fin.close();
     }
@@ -100,9 +107,16 @@ namespace RSA_HB
     {
         ifstream fin;
 
-        binary block("");
-        fin.open("RSA_Cipher_Text.txt");
+        //binary block("");
+        string line;
+        fin.open("unsecure_channel/RSA_Cipher_Text.txt");
 
+        // Get cipher text from file
+        getline(fin, line);
+        line = line.substr(line.find(": ") + 2); // increment to cut out the ": "
+        cipher_text = line;
+
+        /*
         while (fin)
         {
             for (int i = 0; i < BLOCK_SIZE; i++)
@@ -122,6 +136,7 @@ namespace RSA_HB
             cipher_text.push_back(block);
             block = "";
         }
+        */
 
         fin.close();
     }
@@ -135,7 +150,7 @@ namespace RSA_HB
     void RSA::generate_Keys()
     {
         // Generate phi (needed for e and d)
-        phi = (n - '1') * (q - '1');
+        phi = (p - '1') * (q - '1');
 
         // Generate public key
         n = p * q;
@@ -148,6 +163,43 @@ namespace RSA_HB
         write_Private_Key_toFile();
         write_Public_Key_toFile();
     }
+
+    //*Encryption/Decription
+    void RSA::encryption()
+    {
+        cipher_text = ModExpo(plain_text, e, n);
+    }
+
+    void RSA::decryption()
+    {
+        plain_text = ModExpo(cipher_text, d, n);
+    }
+
+    void RSA::encrypt_fromFile()
+    {
+        get_Private_Key_fromFile();
+        get_Plain_Text_fromFile();
+        encryption();
+        write_Cipher_Text_toFile();
+    }
+
+    void RSA::encrypt_fromGeneration(const int& size)
+    {
+        generate_RSA_Primes(size);
+        get_Plain_Text_fromFile();
+        generate_Keys();
+        encryption();
+        write_Cipher_Text_toFile();
+    }
+
+    void RSA::decrypt_fromFile()
+    {
+        get_Private_Key_fromFile();
+        get_Public_Key_fromFile();
+        get_Cipher_Text_fromFile();
+        decryption();
+    }
+
 
     //*Helper functions
     void RSA::generate_e()
@@ -163,7 +215,7 @@ namespace RSA_HB
         do
         {
             d = getRandom('1', phi);
-        } while (gcd(d, phi) == '1');
+        } while ((e * d) % phi == '1');
     }
 
     void RSA::write_Public_Key_toFile()
@@ -171,7 +223,7 @@ namespace RSA_HB
         ofstream fout;
 
         // Write public key to a file
-        fout.open("RSA_Public_Key.txt", ios::out);
+        fout.open("unsecure_channel/RSA_Public_Key.txt", ios::out);
         fout << "n: " << n << endl;
         fout << "e: " << e << endl;
         fout.close();
@@ -182,7 +234,7 @@ namespace RSA_HB
         ofstream fout;
 
         // Write private key to a file
-        fout.open("RSA_Private_Key.txt", ios::out);
+        fout.open("local_storage/RSA_Private_Key.txt", ios::out);
         fout << "d: " << d << endl;
         fout << "p: " << p << endl;
         fout << "q: " << q << endl;
@@ -194,9 +246,10 @@ namespace RSA_HB
         ofstream fout;
 
         // Write plain text to a file
-        fout.open("RSA_Plain_Text.txt", ios::out);
-        fout << "Plain Text: ";
+        fout.open("local_storage/RSA_Plain_Text.txt", ios::out);
+        fout << "Plain Text: " << plain_text;
 
+        /*
         // Loop through plain_text and print all of the blocks
         for (binary i : plain_text)
         {
@@ -204,6 +257,7 @@ namespace RSA_HB
         }
 
         fout << endl;
+        */
 
         fout.close();
     }
@@ -213,9 +267,10 @@ namespace RSA_HB
         ofstream fout;
 
         // Write cipher text to a file
-        fout.open("RSA_Cipher_Text.txt", ios::out);
-        fout << "Cipher Text: ";
+        fout.open("unsecure_channel/RSA_Cipher_Text.txt", ios::out);
+        fout << "Cipher Text: " << cipher_text;
 
+        /*
         // Loop through cipher_text and print all of the blocks
         for (binary i : cipher_text)
         {
@@ -223,6 +278,7 @@ namespace RSA_HB
         }
 
         fout << endl;
+        */
 
         fout.close();
     }
