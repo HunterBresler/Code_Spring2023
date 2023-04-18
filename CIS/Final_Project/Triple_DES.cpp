@@ -46,6 +46,7 @@ namespace Triple_DES_HB
         plain_text = {};
 
         binary block("");
+        char next;
         fin.open("local_storage/3DES_Plain_Text.txt");
 
         
@@ -53,23 +54,33 @@ namespace Triple_DES_HB
         {
             for (int i = 0; i < BLOCK_SIZE; i++)
             {
-                if (fin.eof() != true)
+                next = fin.get();
+
+                if (fin.eof())
                 {
-                    // Add next read char
-                    block.push_back(fin.get());
+                    if (i == 0)
+                    {
+                        break;
+                    }
+
+                    block = block.PadLeft(BLOCK_SIZE - block.size());
+                    break;
                 }
-                else
-                {
-                    // Pad 0s until block has a length of block size
-                    block.insert(block.begin(), '0');
-                }
+
+                // Add next read char
+                block.push_back(next);
+            }
+
+            // Prevent empty blocks
+            if (block == "")
+            {
+                break;
             }
 
             plain_text.push_back(block);
             cout << "\nPT: " << block << "\nSize: " << block.size();
             block = "";
         }
-        
 
         fin.close();
     }
@@ -82,6 +93,7 @@ namespace Triple_DES_HB
         cipher_text = {};
 
         binary block("");
+        char next;
         fin.open("unsecure_channel/3DES_Cipher_Text.txt");
 
         
@@ -89,23 +101,33 @@ namespace Triple_DES_HB
         {
             for (int i = 0; i < BLOCK_SIZE; i++)
             {
-                if (fin.eof() != true)
+                next = fin.get();
+
+                if (fin.eof())
                 {
-                    // Add next read char
-                    block.push_back(fin.get());
+                    if (i == 0)
+                    {
+                        break;
+                    }
+
+                    block = block.PadLeft(BLOCK_SIZE - block.size());
+                    break;
                 }
-                else
-                {
-                    // Pad 0s until block has a length of block size
-                    block.insert(block.begin(), '0');
-                }
+                
+                // Add next read char
+                block.push_back(next);
             }
 
+            // Prevent empty blocks
+            if (block == "")
+            {
+                break;
+            }
+            
             cipher_text.push_back(block);
             cout << "\nCT: " << block << "\nSize: " << block.size();
             block = "";
-        }
-        
+        }   
 
         fin.close();
     }

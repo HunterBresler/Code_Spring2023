@@ -22,14 +22,7 @@ int main()
     //Set seed for random numbers
     srand(time(NULL));
 
-    //RSA Sender(64), Receiver;
-
-    //Sender.encrypt_fromFile();
-    //Receiver.decrypt_fromFile();
-
-    Triple_DES Sender;
-    Sender.encrypt_fromGeneration();
-    Sender.decrypt_fromFile();
+    
 
     //Calc and print time
     auto end = chrono::high_resolution_clock::now();
