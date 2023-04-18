@@ -23,7 +23,8 @@ int main()
 
     //Public has public key
     //Sender send 3DES keys after encrypting them
-    RSA PublicRSA(256), SenderRSA;
+    RSA PublicRSA(16), SenderRSA;
+    /*
     Triple_DES PublicDES, SenderDES;
 
     //Sender generates 3DES private key and sends it to RSA
@@ -42,7 +43,7 @@ int main()
 
     //Sender encrypts 3DES key with RSA and sends the cipher text
     SenderRSA.encrypt_fromFile();
-
+    */
     //Public decrypts sent 3DES key and puts it to pt
     PublicRSA.decrypt_fromFile();
 

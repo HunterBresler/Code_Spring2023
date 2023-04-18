@@ -208,15 +208,15 @@ namespace RSA_HB
         do
         {
             e = getRandom('1', phi);
-        } while (gcd(e, phi) == '1');
+        } while (gcd(e, phi) != '1');
     }
 
-    void RSA::generate_d()
+    void RSA::generate_d()//!CHANGE TO EEA
     {
         do
         {
-            d = getRandom('1', phi);
-        } while ((e * d) % phi == '1');
+            d = getRandom("10", phi - "1");
+        } while (((d * e) % phi) != '1');
     }
 
     void RSA::write_Public_Key_toFile()
