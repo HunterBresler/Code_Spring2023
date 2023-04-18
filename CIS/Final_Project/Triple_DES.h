@@ -51,7 +51,7 @@ namespace Triple_DES_HB
             binary generate_key();
             // Precondition: keys 1-3 must have values
             // Generates the 3 sets of sub keys used for 3DES
-            void generate_sub_keys();
+            binary generate_sub_key(binary& leftSide, binary& rightSide, int round);
             //Compress master key by running it through the pc1 table
             binary pc1_permutation(binary key); 
             //Shifts key 1 space to the left

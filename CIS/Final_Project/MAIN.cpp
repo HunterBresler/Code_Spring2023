@@ -5,10 +5,13 @@
 #include "binary.cpp"
 #include "RSA.h"
 #include "RSA.cpp"
+#include "Triple_DES.h"
+#include "Triple_DES.cpp"
 
 using namespace std;
 using namespace binary_HB;
 using namespace RSA_HB;
+using namespace Triple_DES_HB;
 
 int main()
 {
@@ -19,10 +22,14 @@ int main()
     //Set seed for random numbers
     srand(time(NULL));
 
-    RSA Sender(64), Receiver;
+    //RSA Sender(64), Receiver;
 
     //Sender.encrypt_fromFile();
-    Receiver.decrypt_fromFile();
+    //Receiver.decrypt_fromFile();
+
+    Triple_DES Sender;
+    Sender.generate_all_keys();
+    Sender.write_Private_Key_toFile();
 
     //Calc and print time
     auto end = chrono::high_resolution_clock::now();

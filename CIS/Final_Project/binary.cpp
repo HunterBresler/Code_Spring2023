@@ -395,6 +395,11 @@ namespace binary_HB
         number.push_back(c);
     }
 
+    void binary::append(const binary &b)
+    {
+        number.append(b.number);
+    }
+
     void binary::insert(const string::iterator it, const char &c)
     {
         number.insert(it, c);

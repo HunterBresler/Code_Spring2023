@@ -83,6 +83,7 @@ namespace binary_HB
             void erase(const string::iterator &it);
             string::iterator begin();
             void push_back(const char &c);
+            void append(const binary &b);
             void insert(const string::iterator it, const char &c);
             void pop_back();
             binary substr(const int &index1, const int &index2);
