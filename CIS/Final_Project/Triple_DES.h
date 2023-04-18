@@ -36,11 +36,6 @@ namespace Triple_DES_HB
             //*Constructor
             Triple_DES();
 
-            //*Getter Functions
-            binary *get_sub_keys();
-            binary get_plain_text();
-            binary get_cipher_text();
-
             //*Getter/Setter functions
             // gets private key from file (3 DES keys)
             void get_Private_Key_fromFile();
@@ -48,11 +43,21 @@ namespace Triple_DES_HB
             void get_Plain_Text_fromFile();
             // fills cipher_text from file in BLOCK_SIZE sized blocks
             void get_Cipher_Text_fromFile();
+
+            //*Key generation
             // Generates the 3 keys used for 3DES
-            void generate_keys();
+            void generate_all_keys();
+            //Generates and returns one DES key
+            binary generate_key();
             // Precondition: keys 1-3 must have values
             // Generates the 3 sets of sub keys used for 3DES
             void generate_sub_keys();
+            //Compress master key by running it through the pc1 table
+            binary pc1_permutation(binary key); 
+            //Shifts key 1 space to the left
+            binary left_shift(binary input); 
+            //Compress generated key into sub key
+            binary pc2_permutation(binary key); 
 
             //*Encryption/Decryption
             void encrypt();
@@ -74,10 +79,8 @@ namespace Triple_DES_HB
             void swap_halves();
             void invert_sub_keys();
 
-            //*Check functions
-            void check_plain_text();
-
             //*Helper functions
+            void check_plain_text();
             void write_Private_Key_toFile();
             void write_Plain_Text_toFile();
             void write_Cipher_Text_toFile();
@@ -85,6 +88,8 @@ namespace Triple_DES_HB
 
     //*Constants
     const int BLOCK_SIZE = 64;
+    const binary MIN_KEY = "1000000000000000000000000000000000000000000000000000000000000000";
+    const binary MAX_KEY = "1111111111111111111111111111111111111111111111111111111111111111";
 
     //PC1 Table
     const int pc1[56] = 
