@@ -28,8 +28,8 @@ int main()
     //Receiver.decrypt_fromFile();
 
     Triple_DES Sender;
-    Sender.generate_all_keys();
-    Sender.write_Private_Key_toFile();
+    Sender.encrypt_fromGeneration();
+    Sender.decrypt_fromFile();
 
     //Calc and print time
     auto end = chrono::high_resolution_clock::now();

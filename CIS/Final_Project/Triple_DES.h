@@ -45,10 +45,12 @@ namespace Triple_DES_HB
             void get_Cipher_Text_fromFile();
 
             //*Key generation
-            // Generates the 3 keys used for 3DES
-            void generate_all_keys();
+            //Randomly generates 3 64 bit keys
+            void generate_private_key();
             //Generates and returns one DES key
             binary generate_key();
+            // Generates the 3 sets of sub keys used for 3DES
+            void generate_all_sub_keys();
             // Precondition: keys 1-3 must have values
             // Generates the 3 sets of sub keys used for 3DES
             binary generate_sub_key(binary& leftSide, binary& rightSide, int round);
@@ -63,28 +65,28 @@ namespace Triple_DES_HB
             void encrypt();
             void decrypt(); 
             void encrypt_fromFile();
-            void encrypt_fromGeneration(const int& size);
+            void encrypt_fromGeneration();
             void decrypt_fromFile();
 
-            //*3DES Algorithm functions
-            binary initial_permutation();
-            void expansion();
-            void sub_box();
-            void sub_permutation();
-            binary inverse_permutation(binary combined);
-
-            //*DES Calc functions
-            int binary_to_decimal(binary binary);
-            binary decimal_to_binary(int decimal);
-            void swap_halves();
-            void invert_sub_keys();
-
             //*Helper functions
+            void invert_sub_keys();
             void check_plain_text();
             void write_Private_Key_toFile();
             void write_Plain_Text_toFile();
             void write_Cipher_Text_toFile();
     };
+
+    //*3DES Algorithm functions
+    binary initial_permutation(binary text);
+    binary expansion(binary modified_half);
+    binary sub_box(binary modified_half);
+    binary sub_permutation(binary modified_half);
+    binary inverse_permutation(binary combined);
+
+    //*DES Calc functions
+    int binary_to_decimal(const binary& num);
+    binary decimal_to_binary(int decimal);
+    void swap_halves(binary& left, binary& right);
 
     //*Constants
     const int BLOCK_SIZE = 64;

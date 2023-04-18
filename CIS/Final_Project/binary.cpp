@@ -638,40 +638,4 @@ namespace binary_HB
         return genPrime;
     }
 
-    //! Move to 3DES
-    int binary_to_decimal(const binary &num)
-    {
-        // read binary right to left and add 2^i to result if the read digit is '1'
-        int result = 0;
-        for (int i = 0; i < num.size(); i++)
-        {
-            // Math to read from right to left
-            if (num[num.size() - (i + 1)] == '1')
-            {
-                result += pow(2, i);
-            }
-        }
-
-        return result;
-    }
-
-    binary decimal_to_binary(int decimal)
-    {
-        // Get the remainder and add it as the right most digit of binary
-        string bNum = "";
-        while (decimal != 0)
-        {
-            bNum = (decimal % 2 == 0 ? "0" : "1") + bNum; // Sick new operator. Ternary operator epic
-            decimal /= 2;
-        }
-
-        // Make sure binary is 4 bits in length
-        while (bNum.size() < 4)
-        {
-            bNum = "0" + bNum;
-        }
-
-        binary num(bNum);
-        return num;
-    }
 }//end binary_HB
