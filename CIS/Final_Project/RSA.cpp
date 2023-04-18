@@ -177,7 +177,7 @@ namespace RSA_HB
 
     void RSA::encrypt_fromFile()
     {
-        get_Private_Key_fromFile();
+        get_Public_Key_fromFile();
         get_Plain_Text_fromFile();
         encryption();
         write_Cipher_Text_toFile();
@@ -198,6 +198,7 @@ namespace RSA_HB
         get_Public_Key_fromFile();
         get_Cipher_Text_fromFile();
         decryption();
+        write_Plain_Text_toFile();
     }
 
 
