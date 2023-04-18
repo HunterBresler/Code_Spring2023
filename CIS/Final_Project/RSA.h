@@ -1,7 +1,6 @@
 //*Header file for RSA class
 #ifndef RSA_H
 #define RSA_H
-#include <iostream>
 #include <fstream>
 #include <vector>
 #include "binary.h"

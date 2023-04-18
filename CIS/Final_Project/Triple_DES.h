@@ -1,7 +1,6 @@
 //*Header file for Triple_DES class
 #ifndef Triple_DES_H
 #define Triple_DES_H
-#include <iostream>
 #include <fstream>
 #include <vector>
 #include <cmath>
@@ -37,6 +36,9 @@ namespace Triple_DES_HB
             Triple_DES();
 
             //*Getter/Setter functions
+            binary get_binary_key_1();
+            binary get_binary_key_2();
+            binary get_binary_key_3();
             // gets private key from file (3 DES keys)
             void get_Private_Key_fromFile();
             // fills plain_text from file in BLOCK_SIZE sized blocks

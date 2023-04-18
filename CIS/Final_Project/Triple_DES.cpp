@@ -13,6 +13,21 @@ namespace Triple_DES_HB
     }
 
     //*Getter/Setter functions
+    binary Triple_DES::get_binary_key_1()
+    {
+        return key_1;
+    }
+
+    binary Triple_DES::get_binary_key_2()
+    {
+        return key_2;
+    }
+
+    binary Triple_DES::get_binary_key_3()
+    {
+        return key_3;
+    }
+
     void Triple_DES::get_Private_Key_fromFile()
     {
         ifstream fin;
@@ -67,8 +82,15 @@ namespace Triple_DES_HB
                     break;
                 }
 
-                // Add next read char
-                block.push_back(next);
+                if (next == ' ')
+                {
+                    i--;
+                }
+                else
+                {
+                    // Add next read char
+                    block.push_back(next);
+                }
             }
 
             // Prevent empty blocks
@@ -77,8 +99,8 @@ namespace Triple_DES_HB
                 break;
             }
 
+            block.check_binary();
             plain_text.push_back(block);
-            cout << "\nPT: " << block << "\nSize: " << block.size();
             block = "";
         }
 
@@ -114,8 +136,15 @@ namespace Triple_DES_HB
                     break;
                 }
                 
-                // Add next read char
-                block.push_back(next);
+                if (next == ' ')
+                {
+                    i--;
+                }
+                else
+                {
+                    // Add next read char
+                    block.push_back(next);
+                }
             }
 
             // Prevent empty blocks
@@ -124,8 +153,8 @@ namespace Triple_DES_HB
                 break;
             }
             
+            block.check_binary();
             cipher_text.push_back(block);
-            cout << "\nCT: " << block << "\nSize: " << block.size();
             block = "";
         }   
 
@@ -473,7 +502,6 @@ namespace Triple_DES_HB
         for (binary i : plain_text)
         {
             fout << i;
-            cout << "\nB: " << i << "\nSize: " << i.size();
         }   
 
         fout.close();

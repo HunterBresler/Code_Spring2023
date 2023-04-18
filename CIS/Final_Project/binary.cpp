@@ -12,16 +12,19 @@ namespace binary_HB
     binary::binary(string num)
     {
         number = num;
+        check_binary();
     }
 
     binary::binary(char num)
     {
         number = num;
+        check_binary();
     }
 
     binary::binary(const char num[])
     {
         number = num;
+        void check_binary();
     }
 
     binary::binary(int size)
@@ -39,6 +42,7 @@ namespace binary_HB
     void binary::set_Number(string newNum)
     {
         number = newNum;
+        void check_binary();
     }
 
     //*Binary Overload Operations
@@ -371,6 +375,19 @@ namespace binary_HB
         if (number == "")
         {
             number = '0';
+        }
+    }
+
+    void binary::check_binary()
+    {
+
+        for (char i: number)
+        {
+            if (i != '0' && i != '1')
+            {
+                cout << "\nERROR: Invalid Binary Number";
+                exit(2);
+            }
         }
     }
 

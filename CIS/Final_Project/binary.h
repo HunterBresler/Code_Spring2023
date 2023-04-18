@@ -76,6 +76,8 @@ namespace binary_HB
             binary PadLeft(int padCount) const;
             // Removes leading 0s of a binary number
             void removeLeadingZeros();
+            //Makes sure it is a binary number
+            void check_binary();
 
             //*String overload functions
             // Allows string functions on Binary objects
