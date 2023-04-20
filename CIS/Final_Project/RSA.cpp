@@ -220,14 +220,6 @@ namespace RSA_HB
         if (sB == true)
         {
             d = phi - s;
-            if ((e * d) % phi == '1')
-            {
-                cout << "\nSuccess";
-            }
-            else
-            {
-                cout << "\nFail";
-            }
         }
         else
         {
