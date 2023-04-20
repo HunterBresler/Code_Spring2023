@@ -537,6 +537,52 @@ namespace binary_HB
         return gcd(num2, num1 % num2);
     }
 
+    binary sub_neg(const binary &minuend, const binary &subtrahend, bool neg1, bool & neg_res)
+    {
+
+        if (neg_res == true && neg1 == true)
+        {
+            // Check if minuend is greater than subtrahend
+            if (minuend < subtrahend)
+            {
+                neg_res = false;
+                return subtrahend - minuend;
+            }
+            else
+            {
+                neg_res = true;
+                return minuend - subtrahend;
+            }
+        }
+        else if (neg_res == true && neg1 == false)
+        {
+            neg_res = true;
+            return minuend + subtrahend;
+        }
+        else if (neg_res == false && neg1 == true)
+        {
+            neg_res = false;
+            return minuend + subtrahend;
+        }
+        else if (neg_res == false && neg1 == false)
+        {
+            // Make sure minuend is greater than subtrahend
+            if (minuend < subtrahend)
+            {
+                neg_res = true;
+                return subtrahend - minuend;
+            }
+            else
+            {
+                neg_res = false;
+                return minuend - subtrahend;
+            }
+        }
+
+        return "0";
+        
+    }
+    
     //*Primes
     // Returns true if prime
     bool isPrime(const binary &num)

@@ -68,6 +68,7 @@ namespace RSA_HB
             //*Helper functions
             void generate_e();
             void generate_d();
+            binary EEA_for_d(const binary& a, const binary& b, binary& s, binary& t, bool& sB, bool& tB);
             void write_Public_Key_toFile();
             void write_Private_Key_toFile();
             void write_Plain_Text_toFile();

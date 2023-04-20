@@ -211,12 +211,40 @@ namespace RSA_HB
         } while (gcd(e, phi) != '1');
     }
 
-    void RSA::generate_d()//!CHANGE TO EEA
+    void RSA::generate_d()
     {
-        do
+        binary s, t;
+        bool sB, tB;
+        EEA_for_d(e, phi, s, t, sB, tB);
+        
+        if (sB == true)
         {
-            d = getRandom("10", phi - "1");
-        } while (((d * e) % phi) != '1');
+            d = phi - s;
+        }
+        else
+        {
+            generate_e();
+            generate_d();
+        }
+    }
+
+    binary RSA::EEA_for_d(const binary& a, const binary& b, binary& s, binary& t, bool& sB, bool& tB)
+    {
+        if (b == 0)
+        {
+            s = 1;
+            t = 0;
+            sB = false;
+            tB = false;
+            return a;
+        }
+
+        binary s1,t1;
+        binary c = EEA_for_d(b, a % b, s1, t1, sB, tB);
+        s = t1;
+        sB = tB;
+        t = sub_neg(s1, (t1 * (a / b)), sB, tB);
+        return c;       
     }
 
     void RSA::write_Public_Key_toFile()

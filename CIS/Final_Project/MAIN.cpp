@@ -23,7 +23,7 @@ int main()
 
     //Public has public key
     //Sender send 3DES keys after encrypting them
-    RSA PublicRSA(16), SenderRSA;
+    RSA PublicRSA(32), SenderRSA;
     /*
     Triple_DES PublicDES, SenderDES;
 
