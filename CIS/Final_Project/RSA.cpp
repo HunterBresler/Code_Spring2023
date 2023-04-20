@@ -230,20 +230,23 @@ namespace RSA_HB
 
     binary RSA::EEA_for_d(const binary& a, const binary& b, binary& s, binary& t, bool& sB, bool& tB)
     {
-        if (b == 0)
+        if (b == '0')
         {
-            s = 1;
-            t = 0;
+            s = '1';
+            t = '0';
             sB = false;
             tB = false;
             return a;
         }
 
-        binary s1,t1;
+        binary s1, t1, sub;
         binary c = EEA_for_d(b, a % b, s1, t1, sB, tB);
         s = t1;
+        bool temp = sB;
         sB = tB;
-        t = sub_neg(s1, (t1 * (a / b)), sB, tB);
+        sub = t1 * (a / b);
+        t = sub_neg(s1, (t1 * (a / b)), temp, tB);
+        //cout << "\nS = " << s << " " << sB << " T = " << t << " " << tB << " sub = " << sub;
         return c;       
     }
 

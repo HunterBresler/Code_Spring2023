@@ -124,7 +124,7 @@ namespace binary_HB
     bool simplePrimeCheck(const binary &num);
     bool millerTest(const binary &num, binary d);
     binary generatePrime(const int &Size);
-    binary sub_neg(const binary &minuend, const binary &subtrahend, bool neg1, bool & neg_res);
+    binary sub_neg(const binary &minuend, const binary &subtrahend, bool neg1, bool& neg_res);
 } //end binary_HB
 
 #endif

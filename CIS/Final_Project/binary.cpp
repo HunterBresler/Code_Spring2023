@@ -537,10 +537,10 @@ namespace binary_HB
         return gcd(num2, num1 % num2);
     }
 
-    binary sub_neg(const binary &minuend, const binary &subtrahend, bool neg1, bool & neg_res)
+    binary sub_neg(const binary &minuend, const binary &subtrahend, bool neg1, bool& neg_res)
     {
 
-        if (neg_res == true && neg1 == true)
+        if (neg1 == true && neg_res == true)
         {
             // Check if minuend is greater than subtrahend
             if (minuend < subtrahend)
@@ -554,17 +554,17 @@ namespace binary_HB
                 return minuend - subtrahend;
             }
         }
-        else if (neg_res == true && neg1 == false)
+        else if (neg1 == true && neg_res == false)
         {
             neg_res = true;
             return minuend + subtrahend;
         }
-        else if (neg_res == false && neg1 == true)
+        else if (neg1 == false && neg_res == true)
         {
             neg_res = false;
             return minuend + subtrahend;
         }
-        else if (neg_res == false && neg1 == false)
+        else if (neg1 == false && neg_res == false)
         {
             // Make sure minuend is greater than subtrahend
             if (minuend < subtrahend)
@@ -579,7 +579,9 @@ namespace binary_HB
             }
         }
 
-        return "0";
+        binary ret;
+        neg_res = false;
+        return ret;
         
     }
     

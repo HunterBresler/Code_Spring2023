@@ -21,14 +21,14 @@ int main()
     //Set seed for random numbers
     srand(time(NULL));
 
-    //Public has public key
+    //Receiver has RSA private key
     //Sender send 3DES keys after encrypting them
-    RSA PublicRSA(32), SenderRSA;
-    /*
-    Triple_DES PublicDES, SenderDES;
+    RSA ReceiverRSA, SenderRSA;
+    Triple_DES RevceiverDES, SenderDES;
 
     //Sender generates 3DES private key and sends it to RSA
-    SenderDES.generate_private_key();
+    //SenderDES.generate_private_key();
+    SenderDES.get_Private_Key_fromFile();
     binary pt = "";
     pt.append(SenderDES.get_binary_key_1());
     pt.append(SenderDES.get_binary_key_2());
@@ -43,9 +43,15 @@ int main()
 
     //Sender encrypts 3DES key with RSA and sends the cipher text
     SenderRSA.encrypt_fromFile();
-    */
+
     //Public decrypts sent 3DES key and puts it to pt
-    PublicRSA.decrypt_fromFile();
+    ReceiverRSA.decrypt_fromFile();
+    
+    binary a("11110"), b("110010");
+    binary s, t;
+    bool s1 = false, t1 = false;
+    binary gcdd = ReceiverRSA.EEA_for_d(a, b, s, t, s1, t1);
+    cout << "\nGCD = " << gcdd << " S = " << s << " T = " << t;
 
     //Calc and print time
     auto end = chrono::high_resolution_clock::now();
