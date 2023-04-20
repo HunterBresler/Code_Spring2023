@@ -23,7 +23,7 @@ int main()
 
     //Receiver has RSA private key
     //Sender send 3DES keys after encrypting them
-    RSA ReceiverRSA, SenderRSA;
+    RSA ReceiverRSA(64), SenderRSA;
     Triple_DES RevceiverDES, SenderDES;
 
     //Sender generates 3DES private key and sends it to RSA
@@ -31,8 +31,8 @@ int main()
     SenderDES.get_Private_Key_fromFile();
     binary pt = "";
     pt.append(SenderDES.get_binary_key_1());
-    pt.append(SenderDES.get_binary_key_2());
-    pt.append(SenderDES.get_binary_key_3());
+    //pt.append(SenderDES.get_binary_key_2());
+    //pt.append(SenderDES.get_binary_key_3());
 
     ofstream fout;
 
@@ -46,12 +46,12 @@ int main()
 
     //Public decrypts sent 3DES key and puts it to pt
     ReceiverRSA.decrypt_fromFile();
-    
+
     binary a("11110"), b("110010");
     binary s, t;
     bool s1 = false, t1 = false;
     binary gcdd = ReceiverRSA.EEA_for_d(a, b, s, t, s1, t1);
-    cout << "\nGCD = " << gcdd << " S = " << s << " T = " << t;
+    cout << "\nGCD = " << gcdd << " S = " << s << " " << s1 << " T = " << t << " " << t1;
 
     //Calc and print time
     auto end = chrono::high_resolution_clock::now();

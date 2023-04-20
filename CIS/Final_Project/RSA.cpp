@@ -220,13 +220,21 @@ namespace RSA_HB
         if (sB == true)
         {
             d = phi - s;
+            if ((e * d) % phi == '1')
+            {
+                cout << "\nSuccess";
+            }
+            else
+            {
+                cout << "\nFail";
+            }
         }
         else
         {
             generate_e();
             generate_d();
         }
-    }
+    }   
 
     binary RSA::EEA_for_d(const binary& a, const binary& b, binary& s, binary& t, bool& sB, bool& tB)
     {
