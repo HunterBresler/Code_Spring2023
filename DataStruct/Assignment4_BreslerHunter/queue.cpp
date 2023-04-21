@@ -10,7 +10,7 @@ int queue[10] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 int first_in_line = 0;
 
 
-//*Linked list functions
+//*Queue functions
 //Add a new node at the end of the queue
 void enqueue();
 //Delete the node at the beginning of the queue
@@ -41,7 +41,7 @@ int main(){
     return 0;
 }
 
-//*Linked list functions
+//*Queue functions
 void enqueue()
 {
     //iterates through queue
