@@ -23,9 +23,12 @@ int main()
 
     //Receiver has RSA private key
     //Sender send 3DES keys after encrypting them
-    RSA ReceiverRSA(200), SenderRSA;
+    RSA ReceiverRSA, SenderRSA;
     Triple_DES RevceiverDES, SenderDES;
 
+    ReceiverRSA.generate_RSA_Primes(1024);
+    ReceiverRSA.generate_Keys();
+    /*
     //Sender generates 3DES private key and sends it to RSA
     SenderDES.generate_private_key();
     binary pt = "";
@@ -45,7 +48,7 @@ int main()
 
     //Public decrypts sent 3DES key and puts it to pt
     ReceiverRSA.decrypt_fromFile();
-
+    */
     //Calc and print time
     auto end = chrono::high_resolution_clock::now();
     auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
