@@ -300,9 +300,9 @@ namespace RSA_HB
 
         // Write plain text to a file
         fout.open("local_storage/3DES_Private_Key.txt", ios::out);
-        fout << "key1: " << plain_text.substr(0, 64);
-        fout << "key2: " << plain_text.substr(64, 128);
-        fout << "key3: " << plain_text.substr(128, 192);
+        fout << "key1: " << plain_text.substr(0, 64) << endl;
+        fout << "key2: " << plain_text.substr(64, 128) << endl;
+        fout << "key3: " << plain_text.substr(128, 192) << endl;
         fout.close();
     }
 
