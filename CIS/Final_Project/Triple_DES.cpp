@@ -582,7 +582,7 @@ namespace Triple_DES_HB
 
             // Append the binary representation of the corresponding sub box int to result
             temp = decimal_to_binary(sub_boxes[i][row][col]);
-            temp.PadLeft(4 - temp.size());
+            temp = temp.PadLeft(4 - temp.size());
             result.append(temp);
         }
 

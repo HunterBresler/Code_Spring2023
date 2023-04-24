@@ -353,6 +353,12 @@ namespace binary_HB
     //*Binary Calc Functions
     binary binary::PadRight(int padCount) const
     {
+        //Error Check
+        if (padCount <= 0)
+        {
+            return number;
+        }
+
         string shifted = number;
         shifted.append(padCount, '0');
         return shifted;
@@ -360,6 +366,12 @@ namespace binary_HB
 
     binary binary::PadLeft(int padCount) const
     {
+        //Error Check
+        if (padCount <= 0)
+        {
+            return number;
+        }
+
         string shifted = number;
         shifted.insert(shifted.begin(), padCount, '0');
         return shifted;
@@ -611,8 +623,7 @@ namespace binary_HB
             decimal /= 2;
         }
 
-        binary num(bNum);
-        return num;
+        return bNum;
     }
     
     //*Primes
