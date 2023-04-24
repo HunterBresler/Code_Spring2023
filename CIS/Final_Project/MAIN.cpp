@@ -26,8 +26,16 @@ int main()
     RSA ReceiverRSA, SenderRSA;
     Triple_DES RevceiverDES, SenderDES;
 
-    ReceiverRSA.generate_RSA_Primes(1024);
-    ReceiverRSA.generate_Keys();
+    //ReceiverRSA.generate_RSA_Primes(200);
+    //ReceiverRSA.generate_Keys();
+    SenderDES.generate_private_key();
+    //SenderDES.write_Private_Key_toRSA();
+
+    //SenderRSA.encrypt_fromFile();
+
+    //ReceiverRSA.decrypt_fromFile();
+    //ReceiverRSA.write_Plain_Text_to_3DES_Key();
+
     /*
     //Sender generates 3DES private key and sends it to RSA
     SenderDES.generate_private_key();

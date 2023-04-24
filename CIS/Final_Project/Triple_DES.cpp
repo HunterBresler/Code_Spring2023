@@ -491,6 +491,19 @@ namespace Triple_DES_HB
         fout.close();
     }
 
+    void Triple_DES::write_Private_Key_toRSA()
+    {
+        ofstream fout;
+
+        // Write private key to a file
+        fout.open("local_storage/RSA_Plain_Text.txt", ios::out);
+        fout << "Plain Text: ";
+        fout << key_1;
+        fout << key_2;
+        fout << key_3;
+        fout.close();
+    }
+
     void Triple_DES::write_Plain_Text_toFile()
     {
         ofstream fout;

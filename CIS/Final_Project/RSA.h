@@ -50,6 +50,7 @@ namespace RSA_HB
             void get_Plain_Text_fromFile();
             // Precondition: n must already have been obtained through a public key
             // fills cipher_text from file
+            void write_Plain_Text_to_3DES_Key();
             void get_Cipher_Text_fromFile();
             // Generates size bit primes p and q
             void generate_RSA_Primes(const int &size);

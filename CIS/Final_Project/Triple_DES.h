@@ -74,6 +74,7 @@ namespace Triple_DES_HB
             void invert_sub_keys();
             void check_plain_text();
             void write_Private_Key_toFile();
+            void write_Private_Key_toRSA();
             void write_Plain_Text_toFile();
             void write_Cipher_Text_toFile();
     };

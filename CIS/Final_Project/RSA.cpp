@@ -294,6 +294,18 @@ namespace RSA_HB
         fout.close();
     }
 
+    void RSA::write_Plain_Text_to_3DES_Key()
+    {
+        ofstream fout;
+
+        // Write plain text to a file
+        fout.open("local_storage/3DES_Private_Key.txt", ios::out);
+        fout << "key1: " << plain_text.substr(0, 64);
+        fout << "key2: " << plain_text.substr(64, 128);
+        fout << "key3: " << plain_text.substr(128, 192);
+        fout.close();
+    }
+
     void RSA::write_Cipher_Text_toFile()
     {
         ofstream fout;
