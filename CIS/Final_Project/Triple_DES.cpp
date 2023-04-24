@@ -498,9 +498,9 @@ namespace Triple_DES_HB
         // Write private key to a file
         fout.open("local_storage/RSA_Plain_Text.txt", ios::out);
         fout << "Plain Text: ";
-        fout << key_1 << endl;
-        fout << key_2 << endl;
-        fout << key_3 << endl;
+        fout << key_1;
+        fout << key_2;
+        fout << key_3;
         fout.close();
     }
 
