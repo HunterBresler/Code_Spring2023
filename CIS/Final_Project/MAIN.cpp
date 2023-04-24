@@ -28,13 +28,13 @@ int main()
 
     //ReceiverRSA.generate_RSA_Primes(200);
     //ReceiverRSA.generate_Keys();
-    SenderDES.generate_private_key();
+    //SenderDES.generate_private_key();
     //SenderDES.write_Private_Key_toRSA();
 
     //SenderRSA.encrypt_fromFile();
 
-    //ReceiverRSA.decrypt_fromFile();
-    //ReceiverRSA.write_Plain_Text_to_3DES_Key();
+    ReceiverRSA.decrypt_fromFile();
+    ReceiverRSA.write_Plain_Text_to_3DES_Key();
 
     /*
     //Sender generates 3DES private key and sends it to RSA
