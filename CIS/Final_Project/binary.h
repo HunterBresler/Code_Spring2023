@@ -101,6 +101,8 @@ namespace binary_HB
     binary getRandom(const binary &min, const binary &max);
     // Calculates greatest common denominator of 2 binary numbers
     binary gcd(const binary &num1, const binary &num2);
+    int binary_to_decimal(const binary &num);
+    binary decimal_to_binary(int decimal);
 
     //*Primes
     const binary first_primes[] = {"10", "11", "101", "111", "1011", "1101",

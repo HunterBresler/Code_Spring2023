@@ -564,6 +564,8 @@ namespace Triple_DES_HB
     binary sub_box(binary modified_half)
     {
         binary result = "";
+        binary temp;
+
         for (int i = 0; i < 8; i++) // 8 is how many sub boxes it runs through
         {
             // Each sub box takes every 6 bit piece of modified_half
@@ -579,7 +581,9 @@ namespace Triple_DES_HB
             int col = binary_to_decimal(coordinate.substr(1, 4));
 
             // Append the binary representation of the corresponding sub box int to result
-            result.append(decimal_to_binary(sub_boxes[i][row][col]));
+            temp = decimal_to_binary(sub_boxes[i][row][col]);
+            temp.PadLeft(4 - temp.size());
+            result.append(temp);
         }
 
         return result;
@@ -607,43 +611,6 @@ namespace Triple_DES_HB
         }
 
         return result;
-    }
-
-    //*DES Calc functions
-    int binary_to_decimal(const binary &num)
-    {
-        // read binary right to left and add 2^i to result if the read digit is '1'
-        int result = 0;
-        for (int i = 0; i < num.size(); i++)
-        {
-            // Math to read from right to left
-            if (num[num.size() - (i + 1)] == '1')
-            {
-                result += pow(2, i);
-            }
-        }
-
-        return result;
-    }
-
-    binary decimal_to_binary(int decimal)
-    {
-        // Get the remainder and add it as the right most digit of binary
-        binary bNum = "";
-        while (decimal != 0)
-        {
-            bNum.insert(bNum.begin(), (decimal % 2 == 0) ? '0' : '1'); 
-            decimal /= 2;
-        }
-
-        // Make sure binary is 4 bits in length
-        while (bNum.size() < 4)
-        {
-            bNum.insert(bNum.begin(), '0');
-        }
-
-        binary num(bNum);
-        return num;
     }
 
     void swap_halves(binary& left, binary& right)

@@ -584,6 +584,36 @@ namespace binary_HB
         return ret;
         
     }
+
+    int binary_to_decimal(const binary &num)
+    {
+        // read binary right to left and add 2^i to result if the read digit is '1'
+        int result = 0;
+        for (int i = 0; i < num.size(); i++)
+        {
+            // Math to read from right to left
+            if (num[num.size() - (i + 1)] == '1')
+            {
+                result += pow(2, i);
+            }
+        }
+
+        return result;
+    }
+
+    binary decimal_to_binary(int decimal)
+    {
+        // Get the remainder and add it as the right most digit of binary
+        binary bNum = "";
+        while (decimal != 0)
+        {
+            bNum.insert(bNum.begin(), (decimal % 2 == 0) ? '0' : '1'); 
+            decimal /= 2;
+        }
+
+        binary num(bNum);
+        return num;
+    }
     
     //*Primes
     // Returns true if prime

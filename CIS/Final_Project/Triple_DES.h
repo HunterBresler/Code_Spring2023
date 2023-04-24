@@ -85,10 +85,6 @@ namespace Triple_DES_HB
     binary sub_box(binary modified_half);
     binary sub_permutation(binary modified_half);
     binary inverse_permutation(binary combined);
-
-    //*DES Calc functions
-    int binary_to_decimal(const binary& num);
-    binary decimal_to_binary(int decimal);
     void swap_halves(binary& left, binary& right);
 
     //*Constants
