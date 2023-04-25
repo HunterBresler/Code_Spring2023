@@ -126,6 +126,8 @@ namespace binary_HB
     bool simplePrimeCheck(const binary &num);
     bool millerTest(const binary &num, binary d);
     binary generatePrime(const int &Size);
+    //Use when subtracting numbers that are or would result in a negative number
+    //Modifies the second bool to represent - or +
     binary sub_neg(const binary &minuend, const binary &subtrahend, bool neg1, bool& neg_res);
 } //end binary_HB
 
