@@ -64,10 +64,11 @@ namespace Triple_DES_HB
         char next;
         fin.open("local_storage/3DES_Plain_Text.txt");
 
-        
+        // For string plain text
         while (fin.eof() != true)
         {
-            for (int i = 0; i < BLOCK_SIZE; i++)
+            // Add 8 since every char is represented as 8 bits
+            for (int i = 0; i < BLOCK_SIZE; i += 8)
             {
                 next = fin.get();
 
@@ -78,19 +79,17 @@ namespace Triple_DES_HB
                         break;
                     }
 
-                    block = block.PadLeft(BLOCK_SIZE - block.size());
+                    // Append empty char for easy deletion
+                    while (BLOCK_SIZE - block.size() != 0)
+                    {
+                        block.append(empty_char);
+                    }
+
                     break;
                 }
 
-                if (next == ' ')
-                {
-                    i--;
-                }
-                else
-                {
-                    // Add next read char
-                    block.push_back(next);
-                }
+                // Add next read char
+                block.append(char_to_binary(next));
             }
 
             // Prevent empty blocks
@@ -99,10 +98,10 @@ namespace Triple_DES_HB
                 break;
             }
 
-            block.check_binary();
             plain_text.push_back(block);
             block = "";
         }
+        
 
         fin.close();
     }
@@ -153,7 +152,12 @@ namespace Triple_DES_HB
                 break;
             }
             
-            block.check_binary();
+            if (block.check_binary() == false)
+            {
+                cout << "/nERROR: Invalid cipher text";
+                exit(2);
+            }
+
             cipher_text.push_back(block);
             block = "";
         }   
@@ -511,11 +515,25 @@ namespace Triple_DES_HB
         // Write plain text to a file
         fout.open("local_storage/3DES_Plain_Text.txt", ios::out);
 
+        binary convert_char;
+        char result;
+
         // Loop through plain_text and print all of the blocks
         for (binary i : plain_text)
         {
-            fout << i;
-        }   
+            // Add by 8 since each char is represented by 8 bits
+            for (int j = 0; j < BLOCK_SIZE; j += 8)
+            {
+                convert_char = i.substr(j, 8);
+                result = binary_to_char(convert_char);
+
+                if (result != '\0')
+                {
+                    fout << result;
+                }
+            }
+        }
+    
 
         fout.close();
     }

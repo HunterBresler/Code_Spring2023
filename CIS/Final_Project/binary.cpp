@@ -390,17 +390,18 @@ namespace binary_HB
         }
     }
 
-    void binary::check_binary()
+    bool binary::check_binary()
     {
 
         for (char i: number)
         {
             if (i != '0' && i != '1')
             {
-                cout << "\nERROR: Invalid Binary Number";
-                exit(2);
+                return false;
             }
         }
+
+        return true;
     }
 
     //*String overload functions
@@ -626,6 +627,35 @@ namespace binary_HB
         return bNum;
     }
     
+    binary char_to_binary(const char& c)
+    {
+        int ascii = int(c);
+        binary result;
+
+        //Change to binary
+        result = decimal_to_binary(ascii);
+
+        //Make sure every result is 8 bytes
+        result = result.PadLeft(8 - result.size());
+
+        return result;
+    }
+
+    char binary_to_char(const binary& b)
+    {
+        //Check for empty_char
+        if (b == empty_char)
+        {
+            return '\0';
+        }
+
+        //Change from binary->decimal->ascii
+        int ascii = binary_to_decimal(b);
+        char result = char(ascii);
+
+        return result;
+    }
+
     //*Primes
     // Returns true if prime
     bool isPrime(const binary &num)
@@ -729,13 +759,13 @@ namespace binary_HB
 
     binary generatePrime(const int &Size)
     {
-        binary genPrime, minValue(Size), maxValue(Size + 1);
+        binary genPrime, minvalue(Size), maxvalue(Size + 1);
         //int checkCount = 0;
 
         while (!isPrime(genPrime))
         {
 
-            genPrime = getRandom(minValue, maxValue); // Generates a prime of Size bits
+            genPrime = getRandom(minvalue, maxvalue); // Generates a prime of Size bits
             //checkCount++;
         }
 

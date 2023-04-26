@@ -24,7 +24,7 @@ How to Run It:
 
     All the main functions to use are in order, commented out in the main file. However, there are also 2 encrypt_from_generation functions, one for each scheme, that you can use (The RSA one uses an int parameter for the size of the generated primes in bits). You can also declare an RSA object as RSA NAME(int) where the int is how large the primes should be in bits.
 
-    ALL PLAINTEXT IS BINARY. Any plain text should be typed in advance in the .txt file (Or written to RSA from DES if you're using it as a hybrid scheme using the write_private_key_toRSA). preface it  with a ": ", text behind the colon won't be read.
+    ALL PLAINTEXT IS BINARY. Any  RSA plain text should be typed in advance in the .txt file (Or written to RSA from DES if you're using it as a hybrid scheme using the write_private_key_toRSA). preface it  with a ": ", text behind the colon won't be read. ALL 3DES plain text should exclude all characters but the plain text.
 
 Short Comings and Improvements:
 

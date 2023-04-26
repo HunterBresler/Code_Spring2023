@@ -36,8 +36,8 @@ int main()
     //ReceiverRSA.decrypt_fromFile();
     //ReceiverRSA.write_Plain_Text_to_3DES_Key();
 
-    //RevceiverDES.encrypt_fromFile();
-    //SenderDES.decrypt_fromFile();
+    RevceiverDES.encrypt_fromFile();
+    SenderDES.decrypt_fromFile();
 
     //Calc and print time
     auto end = chrono::high_resolution_clock::now();

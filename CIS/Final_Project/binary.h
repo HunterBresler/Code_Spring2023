@@ -77,7 +77,7 @@ namespace binary_HB
             // Removes leading 0s of a binary number
             void removeLeadingZeros();
             //Makes sure it is a binary number
-            void check_binary();
+            bool check_binary();
 
             //*String overload functions
             // Allows string functions on Binary objects
@@ -103,6 +103,9 @@ namespace binary_HB
     binary gcd(const binary &num1, const binary &num2);
     int binary_to_decimal(const binary &num);
     binary decimal_to_binary(int decimal);
+    binary char_to_binary(const char& c);
+    char binary_to_char(const binary& b);
+    const binary empty_char = "11111111";
 
     //*Primes
     const binary first_primes[] = {"10", "11", "101", "111", "1011", "1101",
