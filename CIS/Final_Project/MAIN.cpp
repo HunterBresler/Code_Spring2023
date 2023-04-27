@@ -31,10 +31,10 @@ int main()
     //SenderDES.generate_private_key();
     //SenderDES.write_Private_Key_toRSA();
 
-    //SenderRSA.encrypt_fromFile();
+    SenderRSA.encrypt_fromFile();
 
-    //ReceiverRSA.decrypt_fromFile();
-    //ReceiverRSA.write_Plain_Text_to_3DES_Key();
+    ReceiverRSA.decrypt_fromFile();
+    ReceiverRSA.write_Plain_Text_to_3DES_Key();
 
     RevceiverDES.encrypt_fromFile();
     SenderDES.decrypt_fromFile();
