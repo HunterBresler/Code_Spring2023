@@ -14,26 +14,26 @@ Prime generation:
 
 RSA.h:
 
-    Runs RSA, don't use plain text larger than n-1 in size.
+    Runs RSA, don't use plain text larger than n-1 in size. Only use binary plaintext. Preface plain text with a ": " ("Plain Text: " is what the program uses by default).
 
 3DES.h:
 
-    Runs 3DES using 3 unique keys, any size message works, though 0s will be padded to the last block of 64 bit plain text.
+    Runs 3DES using 3 unique keys, any size message works. All unicode plain text works (except the null character since it's used to terminate extra, unwanted characters).
 
 How to Run It:
 
-    All the main functions to use are in order, commented out in the main file. However, there are also 2 encrypt_from_generation functions, one for each scheme, that you can use (The RSA one uses an int parameter for the size of the generated primes in bits). You can also declare an RSA object as RSA NAME(int) where the int is how large the primes should be in bits.
+    All the main functions to use are in order and commented out in the main file. However, there are also 2 encrypt_from_generation functions not included, one for each scheme, that you can use (The RSA one uses an int parameter for the size of the generated primes in bits). You can also declare an RSA object as RSA NAME(int) where the int is how large the primes should be in bits.
 
-    ALL PLAINTEXT IS BINARY. Any  RSA plain text should be typed in advance in the .txt file (Or written to RSA from DES if you're using it as a hybrid scheme using the write_private_key_toRSA). preface it  with a ": ", text behind the colon won't be read. ALL 3DES plain text should exclude all characters but the plain text.
+    ALL RSA PLAINTEXT IS BINARY. Any RSA plain text should be typed in advance in the .txt file (Or written to RSA from DES if you're using it as a hybrid scheme using the write_private_key_toRSA). Preface it  with a ": ", text behind the colon won't be read. 
+    
+    ALL 3DES UNICODE PLAINTEXT IS VALID. ALL 3DES plain text should exclude all characters but the plain text.
 
 Short Comings and Improvements:
 
-    First, I'd love to add a string to binary and vice versa. It wouldn't even take too long, but I don't have the time between tonight and tomorrow night.
+    First, I'd love to add a USER class that includes the RSA and 3DES classes so the user doesn't have to keep track of 2 objects when running the code as a hybrid scheme. Sadly I would only implement that once each class is fully finished, and I don't have the time to either. It's just far easier to test and debug when the classes are separate.
 
-    Second, I'd love to add a USER class that includes the RSA and 3DES classes so the user doesn't have to keep track of 2 objects when running the code as a hybrid scheme. Sadly I would only implement that once each class is fully finished, and I don't have the time to either. It's just far easier to test and debug when the classes are separate.
+    Second, the local_storage folder is a little iffy since each user will overwrite the other users' data. This is fine for a hybrid scheme, outside 3DES private key since the end goal is for them both to be the same, but it still annoys me. It's a problem that wouldn't exist if it ran on 2 devices, but alas.
 
-    Third, the local_storage folder is a little iffy since each user will overwrite the other users' data. This is fine for a hybrid scheme, outside 3DES private key since the end goal is for them both to be the same, but it still annoys me. It's a problem that wouldn't exist if it ran on 2 devices, but alas.
-
-    Fourth, prime generation and binary math. Mainly, multiplication and likely division are very slow. I saw something called the karatsuba algorithm that would likely increase speed drastically. Also, I believe dividing by the first 300ish primes is more efficient than the first 70. However, I didn't have the time for either. Same for the Lucas mehtod earlier, but that's out of this project's scope anyways.
+    Third, prime generation and binary math. Mainly, multiplication and likely division are very slow. I saw something called the karatsuba algorithm that would likely increase speed drastically. Also, I believe dividing by the first 300ish primes is more efficient than the first 70. However, I didn't have the time for either. Same for the Lucas mehtod mentioned earlier, but that's out of this project's scope anyways.
 
 This is a bit more than a page, so thanks for reading!
